@@ -25,11 +25,9 @@ public class Conductor : MonoBehaviour
     // An AudioSource attached to this GameObject that will play the music.
     public AudioSource musicSource;
 
-    public float lastSongPos = 0;
+    public float lastSongPos = 0f;
 
     public UnityEvent Trigger;
-
-    string spaceState = "incorrect";
 
     List<int> correctBeats = new List<int>();
 
@@ -79,6 +77,7 @@ public class Conductor : MonoBehaviour
                 correctBeats.Add(beatCount);
                 StartCoroutine(MissRoutine(beatCount));
             }
+            
             yield return null;
         }
     }
