@@ -68,7 +68,7 @@ public class Conductor : MonoBehaviour
             // Determine how many beats since the song started
             songPositionInBeats = songPosition / secPerBeat;
 
-            if (songPositionInBeats - lastSongPos >= 3.9)
+            if (songPositionInBeats - lastSongPos >= 4)
             {   // Store curr position in beats for next frame
                 lastSongPos = songPositionInBeats;
                 beatCount++;
