@@ -1,35 +1,68 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    Rigidbody rb;
-    public float moveSpeed = 2f;
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    public float movementSpeed;
+    public Transform movePoint;
+    // Layer with all colliders/boundaries that player should not run into
+    public LayerMask stopMovement;
+    public float tileSize = 1f;
 
-    // Update is called once per frame
+    private bool isMoving = false;
+
     void Update()
     {
-        Vector2 currInput = GetInput();
-        rb.velocity = currInput * moveSpeed;
-
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (!isMoving)
         {
-            Debug.Log("space");
-            Debug.Log(transform.forward);
-            rb.velocity = transform.forward * moveSpeed;
+            HandleInput();
+        }
+        else
+        {
+            MoveToPoint();
         }
     }
 
-    Vector2 GetInput()
+    void HandleInput()
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
-        return new Vector2(horizontalInput, verticalInput);
+
+        if (Mathf.Abs(horizontalInput) == 1f)
+        {
+            if (CanMoveInDirection(Vector3.right * horizontalInput))
+            {
+                MoveToAdjacentTile(Vector3.right * horizontalInput);
+            }
+        }
+        else if (Mathf.Abs(verticalInput) == 1f)
+        {
+            if (CanMoveInDirection(Vector3.up * verticalInput))
+            {
+                MoveToAdjacentTile(Vector3.up * verticalInput);
+            }
+        }
+    }
+
+    bool CanMoveInDirection(Vector3 direction)
+    {
+        Collider[] colliders = Physics.OverlapSphere(movePoint.position + direction, 0.2f, stopMovement);
+        return colliders.Length == 0;
+    }
+
+    void MoveToAdjacentTile(Vector3 direction)
+    {
+        movePoint.position += direction * tileSize;
+        isMoving = true;
+    }
+
+    void MoveToPoint()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, movePoint.position, movementSpeed * Time.deltaTime);
+        if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
+        {
+            isMoving = false;
+        }
     }
 }
