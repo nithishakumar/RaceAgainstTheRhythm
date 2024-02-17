@@ -26,17 +26,18 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleInput()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
+        Vector2 currInput = GetInput();
+        float horizontalInput = currInput.x;
+        float verticalInput = currInput.y;
 
-        if (Mathf.Abs(horizontalInput) == 1f)
+        if (Mathf.Abs(horizontalInput) == 1f && verticalInput == 0f)
         {
             if (CanMoveInDirection(Vector3.right * horizontalInput))
             {
                 MoveToAdjacentTile(Vector3.right * horizontalInput);
             }
         }
-        else if (Mathf.Abs(verticalInput) == 1f)
+        else if (Mathf.Abs(verticalInput) == 1f && horizontalInput == 0f)
         {
             if (CanMoveInDirection(Vector3.up * verticalInput))
             {
@@ -64,5 +65,16 @@ public class CharacterMovement : MonoBehaviour
         {
             isMoving = false;
         }
+    }
+
+    Vector2 GetInput()
+    {
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+        if (Math.Abs(horizontalInput) > 0.0f)
+        {
+            verticalInput = 0.0f;
+        }
+        return new Vector2(horizontalInput, verticalInput);
     }
 }
