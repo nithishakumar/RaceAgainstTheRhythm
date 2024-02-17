@@ -86,7 +86,7 @@ public class Conductor : MonoBehaviour
 
     IEnumerator MissRoutine(int beat)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         for(int i = 0; i < correctBeats.Count; i++)
         {
             if (correctBeats[i] == beat)
