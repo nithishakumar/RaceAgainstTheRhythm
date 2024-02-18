@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,17 @@ public class RhythmSpawner : MonoBehaviour
 {
     public CallToLocations[] locations;
     Subscription<RhythmSpawnEvent> rhythmEventSub;
-
+    public float songBpm;
+    public float spawnEveryXthBeat = 2.5f;
+    float secPerBeat;
     List<GameObject> notes = new List<GameObject>();
 
     void Start()
     {
         rhythmEventSub = EventBus.Subscribe<RhythmSpawnEvent>(SpawnTile);
         notes.Add(ResourceLoader.GetPrefab("musicNote1"));
+        // Calculate the number of seconds in each beat
+        secPerBeat = 60f / songBpm;
         StartCoroutine(SpawnTiles());
     }
 
@@ -51,7 +56,7 @@ public class RhythmSpawner : MonoBehaviour
         int spawnCount = 0;
         while (true)
         {
-            yield return new WaitForSeconds(2.5f * 0.6f);
+            yield return new WaitForSeconds(spawnEveryXthBeat * secPerBeat);
             EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCount));
             spawnCount++;
             yield return null;

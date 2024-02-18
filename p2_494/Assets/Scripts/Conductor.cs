@@ -41,6 +41,9 @@ public class Conductor : MonoBehaviour
     public int numBeatsToIgnore = 4;
 
     public bool playerOnRhythmTile = false;
+
+    public GameObject currentTile;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -129,6 +132,7 @@ public class Conductor : MonoBehaviour
                             Debug.Log("perfect!");
                             // finish the first beat's state
                             correctBeats.RemoveAt(0);
+                            EventBus.Publish<HitEvent>(new HitEvent(currentTile));
                             playerOnRhythmTile = false;
                             break;
                         }
@@ -154,6 +158,7 @@ public class Conductor : MonoBehaviour
             }
             else if (!loopEntered && Input.GetKeyUp(KeyCode.Space))
             {
+                // TODO: Stop Game here
                 Debug.Log("spacebar pressed when player wasn't on tile");
             }
             loopEntered = false;

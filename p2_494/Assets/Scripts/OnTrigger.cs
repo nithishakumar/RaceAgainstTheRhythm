@@ -17,12 +17,14 @@ public class OnTrigger : MonoBehaviour
         if (other.gameObject.CompareTag("rhythm"))
         {
             conductor.playerOnRhythmTile = true;
+            conductor.currentTile = other.gameObject;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
         conductor.playerOnRhythmTile = false;
+        conductor.currentTile = null;
     }
 
     private void OnDestroy()

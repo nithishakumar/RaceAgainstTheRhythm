@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5472580580916841210}
   - component: {fileID: 7145220929585257244}
   - component: {fileID: -7897843134269726353}
+  - component: {fileID: 1722071535325668520}
   m_Layer: 0
   m_Name: MissVisual
   m_TagString: Untagged
@@ -128,3 +129,16 @@ MonoBehaviour:
   targetOpacity: 0.4
   fadeDuration: 0.6
   moveSpeed: 100
+--- !u!114 &1722071535325668520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2573095291980502211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b19c04df71fd13049811759a81c668f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  x: 0.7
