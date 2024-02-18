@@ -113,7 +113,10 @@ public class Conductor : MonoBehaviour
             {
                 Debug.Log("Missed beat " + beat + "!");
                 correctBeats.RemoveAt(i);
-                EventBus.Publish<MissedEvent>(new MissedEvent());
+                if (!ignoreBeats.Contains(beat))
+                {
+                    EventBus.Publish<MissedEvent>(new MissedEvent());
+                }
             }
         }
     }
@@ -145,7 +148,7 @@ public class Conductor : MonoBehaviour
                         }
                         else if (correctBeats.Count <= 0)
                         {
-                            Debug.Log("incorrect: Spacebar pressed too early " + fourthBeatCount);
+                            Debug.Log("incorrect: Spacebar pressed too early (before the 4th beat was detected " + fourthBeatCount);
                             ignoreBeats.Add(fourthBeatCount + 1);
                             EventBus.Publish<MissedEvent>(new MissedEvent());
                             break;
