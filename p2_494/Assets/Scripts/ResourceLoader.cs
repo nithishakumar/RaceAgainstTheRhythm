@@ -50,7 +50,8 @@ public class ResourceLoader
     {
         string prefabPath = mainPath + "Prefabs/";
         loadedPrefabs["musicNote1"] = Resources.Load<GameObject>(prefabPath + "musicNote1");
-        
+        loadedPrefabs["missVisual"] = Resources.Load<GameObject>(prefabPath + "MissVisual");
+        loadedPrefabs["hitVisual"] = Resources.Load<GameObject>(prefabPath + "HitVisual");
     }
 
     public static Sprite GetSprite(string spriteName)

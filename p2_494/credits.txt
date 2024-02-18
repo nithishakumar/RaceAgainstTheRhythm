@@ -8,3 +8,7 @@ https://www.gamedeveloper.com/audio/coding-to-the-beat---under-the-hood-of-a-rhy
 
 Tilemap/Character Sprites:
 https://0x72.itch.io/dungeontileset-ii
+
+Miss Visuals/Font:
+https://commons.wikimedia.org/wiki/File:Fractal_fire.jpg
+https://www.dafont.com/crang.font

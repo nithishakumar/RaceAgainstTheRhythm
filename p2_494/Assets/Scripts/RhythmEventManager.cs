@@ -5,10 +5,12 @@ using UnityEngine;
 public class RhythmEventManager : MonoBehaviour
 {
     Subscription<MissedEvent> missedEventSub;
+    GameObject missVisual;
     // Start is called before the first frame update
     void Start()
     {
         missedEventSub = EventBus.Subscribe<MissedEvent>(_OnRhythmMissed);
+        missVisual = ResourceLoader.GetPrefab("missVisual");
     }
 
     void _OnRhythmMissed(MissedEvent e)
@@ -28,7 +30,10 @@ public class RhythmEventManager : MonoBehaviour
                     toDestroy = rhythmObjects[i];
                 }
             }
+            Vector3 visualSpawnPos = toDestroy.transform.position;
+            visualSpawnPos.y += 0.5f;
             Destroy(toDestroy);
+            GameObject.Instantiate(missVisual, visualSpawnPos, Quaternion.identity);
         }
     }
 
