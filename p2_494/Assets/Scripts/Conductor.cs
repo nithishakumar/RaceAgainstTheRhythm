@@ -17,7 +17,7 @@ public class Conductor : MonoBehaviour
     public float songPosition;
 
     // Current song position, in beats
-    public float songPositionInBeats;
+    public float songPositionInBeats = 0;
 
     // How many seconds have passed since the song started
     public float dspSongTime;
@@ -28,14 +28,17 @@ public class Conductor : MonoBehaviour
     // The last position of the 4th beat (in beats)
     float last4thBeat = 0f;
 
-    float lastPos = 0f;
-
     // The time interval between spawns
     bool spawned = false;
 
+    // Stores all the beats that are yet to be missed
     List<int> correctBeats = new List<int>();
 
+    // Counts the number of times the 4th beat has occured
     int fourthBeatCount = 0;
+
+    // Number of beats to ignore before starting the game
+    public int numBeatsToIgnore = 4;
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +55,12 @@ public class Conductor : MonoBehaviour
         // Start the music
         musicSource.Play();
 
+        StartCoroutine(IgnoreXBeats());
+    }
+
+    IEnumerator IgnoreXBeats()
+    {
+        yield return new WaitForSeconds(secPerBeat * numBeatsToIgnore);
         StartCoroutine("InputDetectionRoutine");
         StartCoroutine("SpaceDetection");
     }
@@ -61,13 +70,13 @@ public class Conductor : MonoBehaviour
         while (true)
         {
             // Determine how many seconds since the song started
-            songPosition = (float)(AudioSettings.dspTime - dspSongTime);
+            songPosition = (float)(AudioSettings.dspTime - dspSongTime - secPerBeat * numBeatsToIgnore);
 
             // Determine how many beats since the song started
             songPositionInBeats = songPosition / secPerBeat;
 
             // Spawn tiles every first beat
-            if(Mathf.FloorToInt(songPositionInBeats % 4) == 1 && !spawned)
+            if (Mathf.FloorToInt(songPositionInBeats % 4) == 1 && !spawned)
             {
                 Debug.Log("Spawn Tile Now!");
                 spawned = true;
