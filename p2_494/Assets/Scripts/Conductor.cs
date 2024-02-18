@@ -62,9 +62,6 @@ public class Conductor : MonoBehaviour
     IEnumerator IgnoreXBeats()
     {
         yield return new WaitForSeconds(secPerBeat * numBeatsToIgnore);
-        EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCalls));
-        spawnCalls++;
-        spawned = true;
         StartCoroutine("InputDetectionRoutine");
         StartCoroutine("SpaceDetection");
     }
@@ -79,19 +76,6 @@ public class Conductor : MonoBehaviour
             // Determine how many beats since the song started
             songPositionInBeats = songPosition / secPerBeat;
 
-            // Spawn tiles every first beat
-            if (Mathf.FloorToInt(songPositionInBeats % 4) == 1 && !spawned)
-            {
-                Debug.Log("Spawn Tile Now!");
-                EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCalls));
-                spawnCalls++;
-                spawned = true;
-            }
-            // Allow spawning during next first beat
-            if(Mathf.FloorToInt(songPositionInBeats % 4) == 1)
-            {
-                spawned = false;
-            }
             // Perform check every fourth beat
             if (songPositionInBeats - last4thBeat >= 4)
             {   // Store curr position in beats for next frame
