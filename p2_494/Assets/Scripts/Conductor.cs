@@ -52,7 +52,6 @@ public class Conductor : MonoBehaviour
 
     public GameObject currentTile;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -91,7 +90,6 @@ public class Conductor : MonoBehaviour
     IEnumerator InputDetectionRoutine()
     {
         float offset = secPerBeat * numBeatsToIgnore;
-        float lastWrongSpacebar = 0;
 
         while (true)
         {
@@ -133,7 +131,6 @@ public class Conductor : MonoBehaviour
             yield return null;
         }
     }
-
 
     IEnumerator MissRoutine(int beat)
     {
