@@ -16,14 +16,4 @@ public class RhythmSpawner : MonoBehaviour
     {
         
     }
-
-    IEnumerator SpawnRhythmObjects()
-    {
-        for(int  i = 0; i < locations.Length; i++) {
-
-
-
-            yield return new WaitForSeconds(4f);
-        }
-    }
 }
