@@ -9,6 +9,7 @@ public class RhythmEventManager : MonoBehaviour
     Subscription<HitEvent> hitEventSub;
     GameObject missVisual;
     GameObject hitVisual;
+    Conductor conductor;
 
     // Start is called before the first frame update
     void Start()
@@ -17,10 +18,12 @@ public class RhythmEventManager : MonoBehaviour
         hitEventSub = EventBus.Subscribe<HitEvent>(_OnRhythmHit);
         missVisual = ResourceLoader.GetPrefab("missVisual");
         hitVisual = ResourceLoader.GetPrefab("hitVisual");
+        conductor = GameObject.Find("Conductor").GetComponent<Conductor>(); 
     }
 
     void _OnRhythmMissed(MissedEvent e)
     {
+        conductor.lastEventTimeStamp = Time.time;
         // Find the closest rhythm gameobject to the player + destroy it
         GameObject player = GameObject.Find("Player");
         GameObject[] rhythmObjects = GameObject.FindGameObjectsWithTag("rhythm");
@@ -45,11 +48,15 @@ public class RhythmEventManager : MonoBehaviour
 
     void _OnRhythmHit(HitEvent e)
     {
+        conductor.lastEventTimeStamp = Time.time;
         GameObject toDestroy = e.tileHit;
-        Vector3 visualSpawnPos = toDestroy.transform.position;
-        visualSpawnPos.y += 0.5f;
-        Destroy(toDestroy);
-        GameObject.Instantiate(hitVisual, visualSpawnPos, Quaternion.identity);
+        if (toDestroy != null)
+        {
+            Vector3 visualSpawnPos = toDestroy.transform.position;
+            visualSpawnPos.y += 0.5f;
+            Destroy(toDestroy);
+            GameObject.Instantiate(hitVisual, visualSpawnPos, Quaternion.identity);
+        }
     }
 
     private void OnDestroy()

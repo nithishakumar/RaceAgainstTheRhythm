@@ -48,9 +48,16 @@ public class Conductor : MonoBehaviour
     // Number of beats to ignore before starting the game
     public int numBeatsToIgnore = 4;
 
+    // Indicates if player is on Rhtyhm tile - controlled by OnTrigger.cs
     public bool playerOnRhythmTile = false;
 
+    // The last tile the player was on - controlled by OnTrigger.cs
     public GameObject currentTile;
+
+    // No. of beats in the song
+    public int numBeats;
+
+    public float lastEventTimeStamp = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -116,8 +123,8 @@ public class Conductor : MonoBehaviour
                 }
             }
             // Space bar was clicked when beat wasn't detected
-            // Check that atleast 1 beat has passed since the last 4th beat to avoid simultaneous miss + hit events
-            else if(Input.GetKeyUp(KeyCode.Space) && (songPositionInBeats - last4thBeat > 1 || last4thBeat == 0))
+            // Check that atleast 0.5s has passed since the last event to avoid simultaneous miss + hit events
+            else if(Input.GetKeyUp(KeyCode.Space) && (Time.time - lastEventTimeStamp > 0.5 || lastEventTimeStamp == 0))
             {
                 Debug.Log("should miss: spacebar clicked out of sync!");
                 int idx = GetFirstIdxOfBeat(BeatStates.TileSpawned);
