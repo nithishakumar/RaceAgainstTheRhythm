@@ -10,6 +10,7 @@ public enum BeatStates
     Undetected,
     TileSpawned,
     Detected,
+    WaitingForHit,
     Hit,
     Missed
 }
@@ -51,6 +52,8 @@ public class Conductor : MonoBehaviour
 
     public GameObject currentTile;
 
+    public bool pauseRoutine = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -84,6 +87,7 @@ public class Conductor : MonoBehaviour
         movement.enabled = true;
         yield return new WaitForSeconds(0.5f);
         StartCoroutine("InputDetectionRoutine");
+        StartCoroutine("SpaceDetectionRoutine");
     }
 
     IEnumerator InputDetectionRoutine()
@@ -105,12 +109,10 @@ public class Conductor : MonoBehaviour
                 fourthBeatCount++;
                 Debug.Log("beat " + fourthBeatCount + " detected");
                 // Only process beat if its in tile spawned state
-                if (beats[fourthBeatCount] == BeatStates.TileSpawned)
-                {
-                    // current beat is at detected state
-                    beats[fourthBeatCount] = BeatStates.Detected;
-                    StartCoroutine(MissRoutine(fourthBeatCount));
-                }
+                // current beat is at detected state
+                beats[fourthBeatCount] = BeatStates.Detected;
+                StartCoroutine(MissRoutine(fourthBeatCount));
+                
             }
             yield return null;
         }
@@ -119,14 +121,16 @@ public class Conductor : MonoBehaviour
 
     IEnumerator MissRoutine(int beat)
     {
+        beats[beat] = BeatStates.WaitingForHit;
         yield return StartCoroutine(WaitForHit());
-        // Only miss beat if it is in detected state
-        if (beats[beat] == BeatStates.Detected)
+        // Only miss beat if it is still waiting for hit
+        if (beats[beat] == BeatStates.WaitingForHit)
         {
             beats[beat] = BeatStates.Missed;
             Debug.Log("Missed beat " + beat + "!");
-            EventBus.Publish<MissedEvent>(new MissedEvent(beat));
+            EventBus.Publish<MissedEvent>(new MissedEvent());
         }
+
     }
 
     int GetFirstIdxOfBeat(BeatStates state)
@@ -160,9 +164,32 @@ public class Conductor : MonoBehaviour
                         EventBus.Publish<HitEvent>(new HitEvent(currentTile));
                         break;
                     }
+                    // Idx will never be -1 because WaitForHit is started only after detecting a beat.
                 }
             }
             timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    IEnumerator SpaceDetectionRoutine()
+    {
+        while(true)
+        {
+            if(Input.GetKeyUp(KeyCode.Space))
+            {
+                int idx = GetFirstIdxOfBeat(BeatStates.WaitingForHit);
+                if(idx == -1)
+                {
+                    idx = GetFirstIdxOfBeat(BeatStates.TileSpawned);
+                    if (idx != -1)
+                    {
+                        beats[idx] = BeatStates.Missed;
+                        Debug.Log("Missed beat " + idx + "!");
+                        EventBus.Publish<MissedEvent>(new MissedEvent());
+                    }
+                }
+            }
             yield return null;
         }
     }

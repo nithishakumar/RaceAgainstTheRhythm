@@ -58,8 +58,6 @@ public class RhythmSpawner : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(spawnEveryXthBeat * secPerBeat);
-            conductor.beats[beats] = BeatStates.TileSpawned;
-            beats++;
             EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCount));
             spawnCount++;
             yield return null;
