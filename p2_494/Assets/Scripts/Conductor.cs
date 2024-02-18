@@ -25,13 +25,17 @@ public class Conductor : MonoBehaviour
     // An AudioSource attached to this GameObject that will play the music.
     public AudioSource musicSource;
 
-    public float lastSongPos = 0f;
+    // The last position of the 4th beat (in beats)
+    float last4thBeat = 0f;
 
-    public UnityEvent Trigger;
+    float lastPos = 0f;
+
+    // The time interval between spawns
+    bool spawned = false;
 
     List<int> correctBeats = new List<int>();
 
-    int beatCount = 0;
+    int fourthBeatCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -52,12 +56,6 @@ public class Conductor : MonoBehaviour
         StartCoroutine("SpaceDetection");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     IEnumerator InputDetectionRoutine()
     {
         while (true)
@@ -68,14 +66,26 @@ public class Conductor : MonoBehaviour
             // Determine how many beats since the song started
             songPositionInBeats = songPosition / secPerBeat;
 
-            if (songPositionInBeats - lastSongPos >= 4)
+            // Spawn tiles every first beat
+            if(Mathf.FloorToInt(songPositionInBeats % 4) == 1 && !spawned)
+            {
+                Debug.Log("Spawn Tile Now!");
+                spawned = true;
+            }
+            // Allow spawning during next first beat
+            if(Mathf.FloorToInt(songPositionInBeats % 4) == 2)
+            {
+                spawned = false;
+            }
+            // Perform check every fourth beat
+            if (songPositionInBeats - last4thBeat >= 4)
             {   // Store curr position in beats for next frame
-                lastSongPos = songPositionInBeats;
-                beatCount++;
-                Debug.Log("beat " + beatCount + " detected");
+                last4thBeat = songPositionInBeats;
+                fourthBeatCount++;
+                Debug.Log("beat " + fourthBeatCount + " detected");
                 // current beat is at correct state
-                correctBeats.Add(beatCount);
-                StartCoroutine(MissRoutine(beatCount));
+                correctBeats.Add(fourthBeatCount);
+                StartCoroutine(MissRoutine(fourthBeatCount));
             }
             
             yield return null;
