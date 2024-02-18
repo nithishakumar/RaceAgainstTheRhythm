@@ -63,6 +63,7 @@ public class Conductor : MonoBehaviour
 
         int numBeats = Mathf.RoundToInt(musicSource.clip.length / secPerBeat) - numBeatsToIgnore;
 
+        // Add one because arrays are zero indexed
         beats = new BeatStates[numBeats + 1];
 
         // Record the time when the music starts
