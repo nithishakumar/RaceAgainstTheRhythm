@@ -40,6 +40,7 @@ public class Conductor : MonoBehaviour
     // Number of beats to ignore before starting the game
     public int numBeatsToIgnore = 4;
 
+    int spawnCalls = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -61,6 +62,9 @@ public class Conductor : MonoBehaviour
     IEnumerator IgnoreXBeats()
     {
         yield return new WaitForSeconds(secPerBeat * numBeatsToIgnore);
+        EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCalls));
+        spawnCalls++;
+        spawned = true;
         StartCoroutine("InputDetectionRoutine");
         StartCoroutine("SpaceDetection");
     }
@@ -79,10 +83,12 @@ public class Conductor : MonoBehaviour
             if (Mathf.FloorToInt(songPositionInBeats % 4) == 1 && !spawned)
             {
                 Debug.Log("Spawn Tile Now!");
+                EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCalls));
+                spawnCalls++;
                 spawned = true;
             }
             // Allow spawning during next first beat
-            if(Mathf.FloorToInt(songPositionInBeats % 4) == 2)
+            if(Mathf.FloorToInt(songPositionInBeats % 4) == 1)
             {
                 spawned = false;
             }
