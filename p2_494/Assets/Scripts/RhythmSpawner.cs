@@ -39,7 +39,6 @@ public class RhythmSpawner : MonoBehaviour
             Transform[] spawnLocations = locations[e.numSpawnCall].spawnLocations;
             for(int i = 0; i < spawnLocations.Length; i++)
             {
-                Debug.Log("entered");
                 GameObject.Instantiate(notes[0], spawnLocations[i].position, Quaternion.identity);
             }
 

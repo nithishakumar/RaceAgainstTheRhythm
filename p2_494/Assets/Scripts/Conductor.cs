@@ -28,9 +28,6 @@ public class Conductor : MonoBehaviour
     // The last position of the 4th beat (in beats)
     public float last4thBeat = 0f;
 
-    // The time interval between spawns
-    bool spawned = false;
-
     // Stores all the beats that are yet to be missed
     List<int> correctBeats = new List<int>();
 
@@ -43,6 +40,8 @@ public class Conductor : MonoBehaviour
     public bool playerOnRhythmTile = false;
 
     public GameObject currentTile;
+
+    HashSet<int> ignoreBeats = new HashSet<int>();
 
     // Start is called before the first frame update
     void Start()
@@ -64,7 +63,14 @@ public class Conductor : MonoBehaviour
 
     IEnumerator IgnoreXBeats()
     {
-        yield return new WaitForSeconds(secPerBeat * numBeatsToIgnore);
+        float duration = secPerBeat * numBeatsToIgnore;
+        
+        CharacterMovement movement = GameObject.Find("Player").GetComponent<CharacterMovement>();
+        movement.enabled = false;
+        // Ignore first X beats and then start the game
+        yield return new WaitForSeconds(duration - 0.5f);
+        movement.enabled = true;
+        yield return new WaitForSeconds(0.5f);
         StartCoroutine("InputDetectionRoutine");
         StartCoroutine("SpaceDetection");
     }
@@ -85,9 +91,12 @@ public class Conductor : MonoBehaviour
                 last4thBeat = songPositionInBeats;
                 fourthBeatCount++;
                 Debug.Log("beat " + fourthBeatCount + " detected");
-                // current beat is at correct state
-                correctBeats.Add(fourthBeatCount);
-                StartCoroutine(MissRoutine(fourthBeatCount));
+                if (!ignoreBeats.Contains(fourthBeatCount))
+                { 
+                    // current beat is at correct state
+                    correctBeats.Add(fourthBeatCount);
+                    StartCoroutine(MissRoutine(fourthBeatCount));
+                }
             }
             
             yield return null;
@@ -97,7 +106,7 @@ public class Conductor : MonoBehaviour
 
     IEnumerator MissRoutine(int beat)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.7f);
         for(int i = 0; i < correctBeats.Count; i++)
         {
             if (correctBeats[i] == beat)
@@ -112,7 +121,6 @@ public class Conductor : MonoBehaviour
     IEnumerator SpaceDetection()
     {
         bool loopEntered = false;
-        bool spacePressed = false;
         while (true)
         {
             if(playerOnRhythmTile)
@@ -125,7 +133,6 @@ public class Conductor : MonoBehaviour
                     loopEntered = true;
                     if (Input.GetKeyUp(KeyCode.Space))
                     {
-                        spacePressed = true;
                         // If at least one of the beats are in correct state and player is on a rhythm object, accept correct input
                         if (correctBeats.Count > 0 && playerOnRhythmTile)
                         {
@@ -136,10 +143,10 @@ public class Conductor : MonoBehaviour
                             playerOnRhythmTile = false;
                             break;
                         }
-                        // No correct beats or player is not on a rhythm object
-                        else
+                        else if (correctBeats.Count <= 0)
                         {
-                            Debug.Log("incorrect!");
+                            Debug.Log("incorrect: Spacebar pressed too early " + fourthBeatCount);
+                            ignoreBeats.Add(fourthBeatCount + 1);
                             EventBus.Publish<MissedEvent>(new MissedEvent());
                             break;
                         }
@@ -148,24 +155,13 @@ public class Conductor : MonoBehaviour
                     yield return null;
                 }
             }
-            // Player didn't press the space bar within the given duration after entering the tile
-            if (loopEntered && !spacePressed)
+            if (!loopEntered && Input.GetKeyUp(KeyCode.Space))
             {
-                Debug.Log("didn't press spacebar on time after entering tile");
-                EventBus.Publish<MissedEvent>(new MissedEvent());
-                // To ensure the missed event is not triggered multiple times
-                playerOnRhythmTile = false;
-            }
-            else if (!loopEntered && Input.GetKeyUp(KeyCode.Space))
-            {
-                // TODO: Stop Game here
-                Debug.Log("spacebar pressed when player wasn't on tile");
+                // TODO: End game here
+                Debug.Log("spacebar pressed when player wasn't on correct tile");
             }
             loopEntered = false;
-            spacePressed = false;
             yield return null;
         }
     }
-
-   
 }

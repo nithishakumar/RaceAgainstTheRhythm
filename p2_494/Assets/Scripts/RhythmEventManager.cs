@@ -61,7 +61,6 @@ public class RhythmEventManager : MonoBehaviour
 
 public class MissedEvent
 {
-
 }
 
 public class HitEvent

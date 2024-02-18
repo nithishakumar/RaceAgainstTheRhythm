@@ -21,7 +21,6 @@ public class FadedUpwardMovement : MonoBehaviour
         currentOpacity = spriteRenderer.color.a;
         // Calculate fade speed based on fade duration
         fadeSpeed = (targetOpacity - currentOpacity) / fadeDuration;
-        Debug.Log("fade speed: " + fadeSpeed);
     }
 
     // Update is called once per frame
