@@ -4,6 +4,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
+
+public enum BeatStates
+{
+    Undetected,
+    TileSpawned,
+    Detected,
+    Hit,
+    Missed
+}
+
 public class Conductor : MonoBehaviour
 {
     // Song beats per minute
@@ -28,11 +38,11 @@ public class Conductor : MonoBehaviour
     // The last position of the 4th beat (in beats)
     public float last4thBeat = 0f;
 
-    // Stores all the beats that are yet to be missed
-    List<int> correctBeats = new List<int>();
+    // Stores all the beats states
+    public BeatStates[] beats;
 
     // Counts the number of times the 4th beat has occured
-    int fourthBeatCount = 0;
+    public int fourthBeatCount = 0;
 
     // Number of beats to ignore before starting the game
     public int numBeatsToIgnore = 4;
@@ -40,8 +50,6 @@ public class Conductor : MonoBehaviour
     public bool playerOnRhythmTile = false;
 
     public GameObject currentTile;
-
-    HashSet<int> ignoreBeats = new HashSet<int>();
 
     // Start is called before the first frame update
     void Start()
@@ -51,6 +59,10 @@ public class Conductor : MonoBehaviour
 
         // Calculate the number of seconds in each beat
         secPerBeat = 60f / songBpm;
+
+        int numBeats = Mathf.RoundToInt(musicSource.clip.length / secPerBeat) - numBeatsToIgnore;
+
+        beats = new BeatStates[numBeats + 1];
 
         // Record the time when the music starts
         dspSongTime = (float)AudioSettings.dspTime;
@@ -72,15 +84,16 @@ public class Conductor : MonoBehaviour
         movement.enabled = true;
         yield return new WaitForSeconds(0.5f);
         StartCoroutine("InputDetectionRoutine");
-        StartCoroutine("SpaceDetection");
     }
 
     IEnumerator InputDetectionRoutine()
     {
+        float offset = secPerBeat * numBeatsToIgnore;
+
         while (true)
         {
             // Determine how many seconds since the song started
-            songPosition = (float)(AudioSettings.dspTime - dspSongTime - secPerBeat * numBeatsToIgnore);
+            songPosition = (float)(AudioSettings.dspTime - dspSongTime - offset);
 
             // Determine how many beats since the song started
             songPositionInBeats = songPosition / secPerBeat;
@@ -91,14 +104,14 @@ public class Conductor : MonoBehaviour
                 last4thBeat = songPositionInBeats;
                 fourthBeatCount++;
                 Debug.Log("beat " + fourthBeatCount + " detected");
-                if (!ignoreBeats.Contains(fourthBeatCount))
-                { 
-                    // current beat is at correct state
-                    correctBeats.Add(fourthBeatCount);
+                // Only process beat if its in tile spawned state
+                if (beats[fourthBeatCount] == BeatStates.TileSpawned)
+                {
+                    // current beat is at detected state
+                    beats[fourthBeatCount] = BeatStates.Detected;
                     StartCoroutine(MissRoutine(fourthBeatCount));
                 }
             }
-            
             yield return null;
         }
     }
@@ -106,64 +119,50 @@ public class Conductor : MonoBehaviour
 
     IEnumerator MissRoutine(int beat)
     {
-        yield return new WaitForSeconds(0.7f);
-        for(int i = 0; i < correctBeats.Count; i++)
+        yield return StartCoroutine(WaitForHit());
+        // Only miss beat if it is in detected state
+        if (beats[beat] == BeatStates.Detected)
         {
-            if (correctBeats[i] == beat)
-            {
-                Debug.Log("Missed beat " + beat + "!");
-                correctBeats.RemoveAt(i);
-                if (!ignoreBeats.Contains(beat))
-                {
-                    EventBus.Publish<MissedEvent>(new MissedEvent());
-                }
-            }
+            beats[beat] = BeatStates.Missed;
+            Debug.Log("Missed beat " + beat + "!");
+            EventBus.Publish<MissedEvent>(new MissedEvent(beat));
         }
     }
 
-    IEnumerator SpaceDetection()
+    int GetFirstIdxOfBeat(BeatStates state)
     {
-        bool loopEntered = false;
-        while (true)
+        for(int i = 0; i <  beats.Length; i++)
         {
-            if(playerOnRhythmTile)
+            if (beats[i] == state) return i;
+        }
+        return -1;
+    }
+
+
+    IEnumerator WaitForHit()
+    {
+        float timer = 0f;
+        // Player has 0.6s to press the spacebar after entering the rhythm tile
+        float duration = secPerBeat;
+        while (timer < duration)
+        {
+            if (playerOnRhythmTile)
             {
-                float timer = 0f;
-                // Player has 0.6s to press the spacebar after entering the rhythm tile
-                float duration = 0.6f;
-                while(playerOnRhythmTile && timer < duration)
+                if (Input.GetKeyUp(KeyCode.Space))
                 {
-                    loopEntered = true;
-                    if (Input.GetKeyUp(KeyCode.Space))
+                    // If at least one of the beats are in detected state and player is on a rhythm object, accept correct input
+                    int idx = GetFirstIdxOfBeat(BeatStates.Detected);
+                    if (idx != -1)
                     {
-                        // If at least one of the beats are in correct state and player is on a rhythm object, accept correct input
-                        if (correctBeats.Count > 0 && playerOnRhythmTile)
-                        {
-                            Debug.Log("perfect!");
-                            // finish the first beat's state
-                            correctBeats.RemoveAt(0);
-                            EventBus.Publish<HitEvent>(new HitEvent(currentTile));
-                            playerOnRhythmTile = false;
-                            break;
-                        }
-                        else if (correctBeats.Count <= 0)
-                        {
-                            Debug.Log("incorrect: Spacebar pressed too early (before the 4th beat was detected " + fourthBeatCount);
-                            ignoreBeats.Add(fourthBeatCount + 1);
-                            EventBus.Publish<MissedEvent>(new MissedEvent());
-                            break;
-                        }
+                        Debug.Log("perfect!");
+                        // finish the first beat's state
+                        beats[idx] = BeatStates.Hit;
+                        EventBus.Publish<HitEvent>(new HitEvent(currentTile));
+                        break;
                     }
-                    timer += Time.deltaTime;
-                    yield return null;
                 }
             }
-            if (!loopEntered && Input.GetKeyUp(KeyCode.Space))
-            {
-                // TODO: End game here
-                Debug.Log("spacebar pressed when player wasn't on correct tile");
-            }
-            loopEntered = false;
+            timer += Time.deltaTime;
             yield return null;
         }
     }

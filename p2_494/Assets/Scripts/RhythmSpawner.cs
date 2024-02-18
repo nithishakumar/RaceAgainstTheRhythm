@@ -21,11 +21,13 @@ public class RhythmSpawner : MonoBehaviour
     public float spawnEveryXthBeat = 2.5f;
     float secPerBeat;
     List<GameObject> notes = new List<GameObject>();
-
+    int beats = 1;
+    Conductor conductor;
     void Start()
     {
         rhythmEventSub = EventBus.Subscribe<RhythmSpawnEvent>(SpawnTile);
         notes.Add(ResourceLoader.GetPrefab("musicNote1"));
+        conductor = GameObject.Find("Conductor").GetComponent<Conductor>();
         // Calculate the number of seconds in each beat
         secPerBeat = 60f / songBpm;
         StartCoroutine(SpawnTiles());
@@ -56,6 +58,8 @@ public class RhythmSpawner : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(spawnEveryXthBeat * secPerBeat);
+            conductor.beats[beats] = BeatStates.TileSpawned;
+            beats++;
             EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCount));
             spawnCount++;
             yield return null;

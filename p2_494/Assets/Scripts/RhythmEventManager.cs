@@ -9,6 +9,7 @@ public class RhythmEventManager : MonoBehaviour
     Subscription<HitEvent> hitEventSub;
     GameObject missVisual;
     GameObject hitVisual;
+    HashSet<int> missedBeats = new HashSet<int>();
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,14 @@ public class RhythmEventManager : MonoBehaviour
 
     void _OnRhythmMissed(MissedEvent e)
     {
+        // Do not miss a beat twice!
+        if(missedBeats.Contains(e.missedBeat))
+        {
+            return;
+        }
+
+        missedBeats.Add(e.missedBeat);
+
         // Find the closest rhythm gameobject to the player + destroy it
         GameObject player = GameObject.Find("Player");
         GameObject[] rhythmObjects = GameObject.FindGameObjectsWithTag("rhythm");
@@ -61,6 +70,8 @@ public class RhythmEventManager : MonoBehaviour
 
 public class MissedEvent
 {
+    public int missedBeat;
+    public MissedEvent(int _missedBeat) { missedBeat = _missedBeat; }
 }
 
 public class HitEvent
