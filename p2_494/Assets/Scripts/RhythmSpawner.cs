@@ -1,7 +1,5 @@
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 
@@ -58,9 +56,19 @@ public class RhythmSpawner : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(spawnEveryXthBeat * secPerBeat);
+            conductor.beats[beats] = BeatStates.TileSpawned;
+            beats++;
             EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCount));
             spawnCount++;
             yield return null;
         }
     }
+}
+
+public class RhythmSpawnEvent
+{
+    public int numSpawnCall = 0;
+
+    public RhythmSpawnEvent(int _numSpawnCall) { numSpawnCall = _numSpawnCall; }
+
 }

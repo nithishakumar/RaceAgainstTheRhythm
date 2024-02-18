@@ -52,7 +52,6 @@ public class Conductor : MonoBehaviour
 
     public GameObject currentTile;
 
-    public bool pauseRoutine = false;
 
     // Start is called before the first frame update
     void Start()
@@ -87,12 +86,12 @@ public class Conductor : MonoBehaviour
         movement.enabled = true;
         yield return new WaitForSeconds(0.5f);
         StartCoroutine("InputDetectionRoutine");
-        StartCoroutine("SpaceDetectionRoutine");
     }
 
     IEnumerator InputDetectionRoutine()
     {
         float offset = secPerBeat * numBeatsToIgnore;
+        float lastWrongSpacebar = 0;
 
         while (true)
         {
@@ -102,18 +101,35 @@ public class Conductor : MonoBehaviour
             // Determine how many beats since the song started
             songPositionInBeats = songPosition / secPerBeat;
 
+
             // Perform check every fourth beat
             if (songPositionInBeats - last4thBeat >= 4)
-            {   // Store curr position in beats for next frame
+            {   
+                // Store curr position in beats for next frame
                 last4thBeat = songPositionInBeats;
                 fourthBeatCount++;
                 Debug.Log("beat " + fourthBeatCount + " detected");
                 // Only process beat if its in tile spawned state
-                // current beat is at detected state
-                beats[fourthBeatCount] = BeatStates.Detected;
-                StartCoroutine(MissRoutine(fourthBeatCount));
-                
+                if (beats[fourthBeatCount] == BeatStates.TileSpawned)
+                {
+                    beats[fourthBeatCount] = BeatStates.Detected;
+                    StartCoroutine(MissRoutine(fourthBeatCount));
+                }
             }
+            // Space bar was clicked when beat wasn't detected
+            // Check at least half a beat has passed since the last 4th beat to avoid simultaneous miss + hit events
+            else if(Input.GetKeyUp(KeyCode.Space) && songPositionInBeats - last4thBeat > 0.5)
+            {
+                Debug.Log("should miss: spacebar clicked out of sync!");
+                int idx = GetFirstIdxOfBeat(BeatStates.TileSpawned);
+                if (idx != -1)
+                {
+                    beats[idx] = BeatStates.Missed;
+                    EventBus.Publish<MissedEvent>(new MissedEvent());
+                }
+
+            }
+            
             yield return null;
         }
     }
@@ -155,7 +171,7 @@ public class Conductor : MonoBehaviour
                 if (Input.GetKeyUp(KeyCode.Space))
                 {
                     // If at least one of the beats are in detected state and player is on a rhythm object, accept correct input
-                    int idx = GetFirstIdxOfBeat(BeatStates.Detected);
+                    int idx = GetFirstIdxOfBeat(BeatStates.WaitingForHit);
                     if (idx != -1)
                     {
                         Debug.Log("perfect!");
@@ -171,26 +187,6 @@ public class Conductor : MonoBehaviour
             yield return null;
         }
     }
-
-    IEnumerator SpaceDetectionRoutine()
-    {
-        while(true)
-        {
-            if(Input.GetKeyUp(KeyCode.Space))
-            {
-                int idx = GetFirstIdxOfBeat(BeatStates.WaitingForHit);
-                if(idx == -1)
-                {
-                    idx = GetFirstIdxOfBeat(BeatStates.TileSpawned);
-                    if (idx != -1)
-                    {
-                        beats[idx] = BeatStates.Missed;
-                        Debug.Log("Missed beat " + idx + "!");
-                        EventBus.Publish<MissedEvent>(new MissedEvent());
-                    }
-                }
-            }
-            yield return null;
-        }
-    }
+   
+    
 }
