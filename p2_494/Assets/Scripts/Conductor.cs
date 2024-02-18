@@ -26,7 +26,7 @@ public class Conductor : MonoBehaviour
     public AudioSource musicSource;
 
     // The last position of the 4th beat (in beats)
-    float last4thBeat = 0f;
+    public float last4thBeat = 0f;
 
     // The time interval between spawns
     bool spawned = false;
@@ -40,7 +40,7 @@ public class Conductor : MonoBehaviour
     // Number of beats to ignore before starting the game
     public int numBeatsToIgnore = 4;
 
-    int spawnCalls = 0;
+    public bool playerOnRhythmTile = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -101,28 +101,63 @@ public class Conductor : MonoBehaviour
             {
                 Debug.Log("Missed beat " + beat + "!");
                 correctBeats.RemoveAt(i);
+                EventBus.Publish<MissedEvent>(new MissedEvent());
             }
         }
     }
 
     IEnumerator SpaceDetection()
     {
-        while(true)
+        bool loopEntered = false;
+        bool spacePressed = false;
+        while (true)
         {
-            if(Input.GetKeyUp(KeyCode.Space))
+            if(playerOnRhythmTile)
             {
-                // If at least one of the beats are in correct state, accept correct input
-                if (correctBeats.Count > 0)
+                float timer = 0f;
+                // Player has 0.6s to press the spacebar after entering the rhythm tile
+                float duration = 0.6f;
+                while(playerOnRhythmTile && timer < duration)
                 {
-                    Debug.Log("perfect!");
-                    // finish the first beat's state
-                    correctBeats.RemoveAt(0);
-                }
-                else
-                {
-                    Debug.Log("incorrect!");
+                    loopEntered = true;
+                    if (Input.GetKeyUp(KeyCode.Space))
+                    {
+                        spacePressed = true;
+                        // If at least one of the beats are in correct state and player is on a rhythm object, accept correct input
+                        if (correctBeats.Count > 0 && playerOnRhythmTile)
+                        {
+                            Debug.Log("perfect!");
+                            // finish the first beat's state
+                            correctBeats.RemoveAt(0);
+                            playerOnRhythmTile = false;
+                            break;
+                        }
+                        // No correct beats or player is not on a rhythm object
+                        else
+                        {
+                            Debug.Log("incorrect!");
+                            EventBus.Publish<MissedEvent>(new MissedEvent());
+                            break;
+                        }
+                    }
+                    timer += Time.deltaTime;
+                    yield return null;
                 }
             }
+            // Player didn't press the space bar within the given duration after entering the tile
+            if (loopEntered && !spacePressed)
+            {
+                Debug.Log("didn't press spacebar on time after entering tile");
+                EventBus.Publish<MissedEvent>(new MissedEvent());
+                // To ensure the missed event is not triggered multiple times
+                playerOnRhythmTile = false;
+            }
+            else if (!loopEntered && Input.GetKeyUp(KeyCode.Space))
+            {
+                Debug.Log("spacebar pressed when player wasn't on tile");
+            }
+            loopEntered = false;
+            spacePressed = false;
             yield return null;
         }
     }

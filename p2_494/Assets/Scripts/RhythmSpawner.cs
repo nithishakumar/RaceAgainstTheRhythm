@@ -5,6 +5,8 @@ using UnityEngine;
 
 
 [System.Serializable]
+
+// Stores the locations where rhythm objects will be spawned for every call to SpawnTiles
 public class CallToLocations
 {
     public Transform[] spawnLocations;
@@ -26,7 +28,7 @@ public class RhythmSpawner : MonoBehaviour
 
     void SpawnTile(RhythmSpawnEvent e)
     {
-        if (e.numSpawnCall < 2)
+        if (e.numSpawnCall < locations.Length)
         {
             
             Transform[] spawnLocations = locations[e.numSpawnCall].spawnLocations;
