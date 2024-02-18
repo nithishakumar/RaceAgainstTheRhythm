@@ -116,8 +116,8 @@ public class Conductor : MonoBehaviour
                 }
             }
             // Space bar was clicked when beat wasn't detected
-            // Check at least half a beat has passed since the last 4th beat to avoid simultaneous miss + hit events
-            else if(Input.GetKeyUp(KeyCode.Space) && songPositionInBeats - last4thBeat > 0.5)
+            // Check that atleast 1 beat has passed since the last 4th beat to avoid simultaneous miss + hit events
+            else if(Input.GetKeyUp(KeyCode.Space) && (songPositionInBeats - last4thBeat > 1 || last4thBeat == 0))
             {
                 Debug.Log("should miss: spacebar clicked out of sync!");
                 int idx = GetFirstIdxOfBeat(BeatStates.TileSpawned);
