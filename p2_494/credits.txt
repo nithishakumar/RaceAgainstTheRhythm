@@ -5,3 +5,6 @@ License (CC BY 4.0): https://filmmusic.io/standard-license
 
 Basic Music-Syncing Code:
 https://www.gamedeveloper.com/audio/coding-to-the-beat---under-the-hood-of-a-rhythm-game-in-unity#close-modal
+
+Tilemap/Character Sprites:
+https://0x72.itch.io/dungeontileset-ii
