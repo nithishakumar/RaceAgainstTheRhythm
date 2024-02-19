@@ -8,7 +8,7 @@ using UnityEngine;
 // Stores the locations where rhythm objects will be spawned for every call to SpawnTiles
 public class CallToLocations
 {
-    public Transform[] spawnLocations;
+    public List<Transform> spawnLocations;
 }
 
 public class RhythmSpawner : MonoBehaviour
@@ -36,12 +36,11 @@ public class RhythmSpawner : MonoBehaviour
         if (e.numSpawnCall < locations.Length)
         {
             
-            Transform[] spawnLocations = locations[e.numSpawnCall].spawnLocations;
-            for(int i = 0; i < spawnLocations.Length; i++)
+            List<Transform> spawnLocations = locations[e.numSpawnCall].spawnLocations;
+            for(int i = 0; i < spawnLocations.Count; i++)
             {
-                GameObject.Instantiate(musicNotes[0], spawnLocations[i].position, Quaternion.identity);
+                 GameObject.Instantiate(musicNotes[0], spawnLocations[i].position, Quaternion.identity);
             }
-
         }
     }
 
@@ -49,6 +48,8 @@ public class RhythmSpawner : MonoBehaviour
     {
         EventBus.Unsubscribe(rhythmEventSub);
     }
+
+  
 
     IEnumerator SpawnTiles()
     {
@@ -59,6 +60,7 @@ public class RhythmSpawner : MonoBehaviour
             conductor.beats[beats] = BeatStates.TileSpawned;
             beats++;
             EventBus.Publish<RhythmSpawnEvent>(new RhythmSpawnEvent(spawnCount));
+            Debug.Log(spawnCount);
             spawnCount++;
             yield return null;
         }

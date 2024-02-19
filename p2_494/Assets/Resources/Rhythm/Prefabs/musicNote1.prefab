@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9179393700644804042}
   - component: {fileID: 2111370661105291554}
   - component: {fileID: -4410974362336443948}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: musicNote1
   m_TagString: rhythm
   m_Icon: {fileID: 0}
