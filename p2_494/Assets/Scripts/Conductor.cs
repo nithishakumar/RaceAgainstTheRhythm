@@ -59,6 +59,8 @@ public class Conductor : MonoBehaviour
 
     public Intervals[] intervals;
 
+    public float gameDuration = 20f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -74,6 +76,7 @@ public class Conductor : MonoBehaviour
 
         // Add one because arrays are zero indexed
         beats = new BeatStates[(int)numBeats + 1];
+        StartCoroutine(GameCountdown());
     }
 
 
@@ -85,8 +88,8 @@ public class Conductor : MonoBehaviour
             bool eventTriggered = interval.CheckForNewInterval(sampledTime, gameObject);
 
             // Space bar was clicked when beat wasn't detected
-            // Check that atleast 0.5s has passed since the last event to avoid simultaneous miss + hit events
-            if (!eventTriggered && Input.GetKeyDown(KeyCode.Space) && (Time.time - lastEventTimeStamp >= 0.5f || lastEventTimeStamp == 0))
+            // Check that atleast 0.7s has passed since the last event to avoid simultaneous miss + hit events
+            if (!eventTriggered && Input.GetKeyDown(KeyCode.Space) && (Time.time - lastEventTimeStamp >= 0.7f || lastEventTimeStamp == 0))
             {
                 // If any of the tiles are waiting for a hit, ignore
                 int idx = GetFirstIdxOfBeat(BeatStates.WaitingForHit);
@@ -144,7 +147,7 @@ public class Conductor : MonoBehaviour
         Debug.Log("waiting for hit");
         float timer = 0f;
         // Player has 0.6s to press the spacebar after entering the rhythm tile
-        float duration = secPerBeat + 0.1f;
+        float duration = (secPerBeat * 2);
         while (timer < duration)
         {
             if (playerOnRhythmTile)
@@ -166,6 +169,16 @@ public class Conductor : MonoBehaviour
             }
             timer += Time.deltaTime;
             yield return null;
+        }
+    }
+
+    IEnumerator GameCountdown()
+    {
+        yield return new WaitForSeconds(gameDuration);
+        int accuracy = Mathf.FloorToInt((score / numBeats) * 100);
+        if (accuracy >= 50)
+        {
+            EventBus.Publish<DisplayFinalScoreEvent>(new DisplayFinalScoreEvent(accuracy));
         }
     }
 
