@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class RhythmEventManager : MonoBehaviour
 {
@@ -41,9 +42,12 @@ public class RhythmEventManager : MonoBehaviour
             }
             Vector3 visualSpawnPos = toDestroy.transform.position;
             visualSpawnPos.y += 0.5f;
+            Debug.Log("published here");
+            EventBus.Publish<UpdateScoreEvent>(new UpdateScoreEvent(Mathf.FloorToInt((e.score / e.numBeats) * 100)));
             Destroy(toDestroy);
             GameObject.Instantiate(missVisual, visualSpawnPos, Quaternion.identity);
         }
+       
     }
 
     void _OnRhythmHit(HitEvent e)
@@ -68,6 +72,9 @@ public class RhythmEventManager : MonoBehaviour
 
 public class MissedEvent
 {
+    public float score;
+    public float numBeats;
+    public MissedEvent(float _score, float _numBeats) { score = _score; numBeats = _numBeats; }
 }
 
 public class HitEvent

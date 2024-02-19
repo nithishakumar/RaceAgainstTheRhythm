@@ -1,9 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
-
 
 public enum BeatStates
 {
@@ -55,7 +51,10 @@ public class Conductor : MonoBehaviour
     public GameObject currentTile;
 
     // No. of beats in the song
-    public int numBeats;
+    public float numBeats;
+    public float score;
+
+    public float scoreDecrementPerMiss = 2;
 
     public float lastEventTimeStamp = 0;
 
@@ -68,10 +67,12 @@ public class Conductor : MonoBehaviour
         // Calculate the number of seconds in each beat
         secPerBeat = 60f / songBpm;
 
-        int numBeats = Mathf.RoundToInt(musicSource.clip.length / secPerBeat) - numBeatsToIgnore;
+        numBeats = Mathf.RoundToInt(musicSource.clip.length / secPerBeat) - numBeatsToIgnore;
+
+        score = numBeats;
 
         // Add one because arrays are zero indexed
-        beats = new BeatStates[numBeats + 1];
+        beats = new BeatStates[(int)numBeats + 1];
 
         // Record the time when the music starts
         dspSongTime = (float)AudioSettings.dspTime;
@@ -124,14 +125,16 @@ public class Conductor : MonoBehaviour
             }
             // Space bar was clicked when beat wasn't detected
             // Check that atleast 0.5s has passed since the last event to avoid simultaneous miss + hit events
-            else if(Input.GetKeyUp(KeyCode.Space) && (Time.time - lastEventTimeStamp > 0.5 || lastEventTimeStamp == 0))
+            else if(Input.GetKeyUp(KeyCode.Space) && (Time.time - lastEventTimeStamp > 1 || lastEventTimeStamp == 0))
             {
                 Debug.Log("should miss: spacebar clicked out of sync!");
                 int idx = GetFirstIdxOfBeat(BeatStates.TileSpawned);
                 if (idx != -1)
                 {
                     beats[idx] = BeatStates.Missed;
-                    EventBus.Publish<MissedEvent>(new MissedEvent());
+                    score -= scoreDecrementPerMiss;
+                    Debug.Log("Missed beat " + idx + "! new score: " + score.ToString());
+                    EventBus.Publish<MissedEvent>(new MissedEvent(score, numBeats));
                 }
 
             }
@@ -148,8 +151,9 @@ public class Conductor : MonoBehaviour
         if (beats[beat] == BeatStates.WaitingForHit)
         {
             beats[beat] = BeatStates.Missed;
-            Debug.Log("Missed beat " + beat + "!");
-            EventBus.Publish<MissedEvent>(new MissedEvent());
+            score -= scoreDecrementPerMiss;
+            Debug.Log("Missed beat " + beat + "! new score: " + score.ToString());
+            EventBus.Publish<MissedEvent>(new MissedEvent(score, numBeats));
         }
 
     }
