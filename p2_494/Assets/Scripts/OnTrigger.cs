@@ -23,8 +23,12 @@ public class OnTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        conductor.playerOnRhythmTile = false;
-        conductor.currentTile = null;
+        if (other.gameObject.CompareTag("rhythm"))
+        {
+            Debug.Log("i left the tile");
+            conductor.playerOnRhythmTile = false;
+            conductor.currentTile = null;
+        }
     }
 
     private void OnDestroy()

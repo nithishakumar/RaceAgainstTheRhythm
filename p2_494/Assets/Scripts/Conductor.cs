@@ -110,7 +110,7 @@ public class Conductor : MonoBehaviour
 
 
             // Perform check every fourth beat
-            if (songPositionInBeats - last4thBeat >= 4)
+            if (songPositionInBeats - last4thBeat >= 3.8)
             {   
                 // Store curr position in beats for next frame
                 last4thBeat = songPositionInBeats;

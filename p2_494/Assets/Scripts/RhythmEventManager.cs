@@ -27,12 +27,14 @@ public class RhythmEventManager : MonoBehaviour
 
     void _OnRhythmMissed(MissedEvent e)
     {
+        // Record event timestamp to prevent simultaneous events
         conductor.lastEventTimeStamp = Time.time;
-        // Find the closest rhythm gameobject to the player + destroy it
+
         GameObject player = GameObject.Find("Player");
         GameObject[] rhythmObjects = GameObject.FindGameObjectsWithTag("rhythm");
         if (rhythmObjects.Length > 0)
         {
+            // Find the closest rhythm gameobject to the player + destroy it
             float minDistance = Vector3.Distance(rhythmObjects[0].transform.position, player.transform.position);
             GameObject toDestroy = rhythmObjects[0];
             for (int i = 1; i < rhythmObjects.Length; i++)
@@ -43,26 +45,44 @@ public class RhythmEventManager : MonoBehaviour
                     toDestroy = rhythmObjects[i];
                 }
             }
+
+            // Spawn miss visual
             Vector3 visualSpawnPos = toDestroy.transform.position;
             visualSpawnPos.y += 0.5f;
-            Debug.Log("published here");
-            EventBus.Publish<UpdateScoreEvent>(new UpdateScoreEvent(Mathf.FloorToInt((e.score / e.numBeats) * 100)));
-            Destroy(toDestroy);
             GameObject.Instantiate(missVisual, visualSpawnPos, Quaternion.identity);
+
+            // Update Score
+            EventBus.Publish<UpdateScoreEvent>(new UpdateScoreEvent(Mathf.FloorToInt((e.score / e.numBeats) * 100)));
+
+            // Reset variables
+            conductor.playerOnRhythmTile = false;
+            conductor.currentTile = null;
+
+            // Destroy Tile
+            Destroy(toDestroy);
         }
        
     }
 
     void _OnRhythmHit(HitEvent e)
     {
+        // Record event timestamp to prevent simultaneous events
         conductor.lastEventTimeStamp = Time.time;
+
         GameObject toDestroy = e.tileHit;
         if (toDestroy != null)
         {
+            // Spawn hit visual
             Vector3 visualSpawnPos = toDestroy.transform.position;
             visualSpawnPos.y += 0.5f;
-            Destroy(toDestroy);
             GameObject.Instantiate(hitVisual, visualSpawnPos, Quaternion.identity);
+
+            // Destroy tile
+            Destroy(toDestroy);
+
+            // Reset variables
+            conductor.playerOnRhythmTile = false;
+            conductor.currentTile = null;
         }
     }
 
