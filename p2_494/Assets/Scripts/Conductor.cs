@@ -189,7 +189,7 @@ public class Conductor : MonoBehaviour
                         EventBus.Publish<HitEvent>(new HitEvent(currentTile));
                         break;
                     }
-                    // Idx will never be -1 because WaitForHit is started only after detecting a beat.
+                    // Idx will never be -1 because WaitForHit is started only after detecting a beat
                 }
             }
             timer += Time.deltaTime;
