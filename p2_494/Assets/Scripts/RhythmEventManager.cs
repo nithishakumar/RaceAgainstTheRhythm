@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
 public class RhythmEventManager : MonoBehaviour
 {
     Subscription<MissedEvent> missedEventSub;
     Subscription<HitEvent> hitEventSub;
+    Subscription<DeathEvent> deathEventSub;
     GameObject missVisual;
     GameObject hitVisual;
     Conductor conductor;
@@ -17,6 +19,7 @@ public class RhythmEventManager : MonoBehaviour
     {
         missedEventSub = EventBus.Subscribe<MissedEvent>(_OnRhythmMissed);
         hitEventSub = EventBus.Subscribe<HitEvent>(_OnRhythmHit);
+        deathEventSub = EventBus.Subscribe<DeathEvent>(_OnDeath);
         missVisual = ResourceLoader.GetPrefab("missVisual");
         hitVisual = ResourceLoader.GetPrefab("hitVisual");
         conductor = GameObject.Find("Conductor").GetComponent<Conductor>(); 
@@ -63,10 +66,16 @@ public class RhythmEventManager : MonoBehaviour
         }
     }
 
+    void _OnDeath(DeathEvent e)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     private void OnDestroy()
     {
         EventBus.Unsubscribe(missedEventSub);
         EventBus.Unsubscribe(hitEventSub);
+        EventBus.Unsubscribe(deathEventSub);
     }
 }
 
@@ -81,4 +90,9 @@ public class HitEvent
 {
     public GameObject tileHit;
     public HitEvent(GameObject _tileHit) { tileHit = _tileHit; }
+}
+
+public class DeathEvent
+{
+
 }

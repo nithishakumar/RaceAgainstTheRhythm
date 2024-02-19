@@ -125,7 +125,7 @@ public class Conductor : MonoBehaviour
             }
             // Space bar was clicked when beat wasn't detected
             // Check that atleast 0.5s has passed since the last event to avoid simultaneous miss + hit events
-            else if(Input.GetKeyUp(KeyCode.Space) && (Time.time - lastEventTimeStamp >= secPerBeat || lastEventTimeStamp == 0))
+            else if(Input.GetKeyDown(KeyCode.Space) && (Time.time - lastEventTimeStamp >= secPerBeat || lastEventTimeStamp == 0))
             {
                 Debug.Log("should miss: spacebar clicked out of sync!");
                 int idx = GetFirstIdxOfBeat(BeatStates.TileSpawned);
@@ -177,7 +177,7 @@ public class Conductor : MonoBehaviour
         {
             if (playerOnRhythmTile)
             {
-                if (Input.GetKeyUp(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
                     // If at least one of the beats are in detected state and player is on a rhythm object, accept correct input
                     int idx = GetFirstIdxOfBeat(BeatStates.WaitingForHit);
