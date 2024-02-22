@@ -24,7 +24,5 @@ public class Animate : MonoBehaviour
         condition = true;
         animRoutine = StartCoroutine(AnimUtilities.Animate(() => condition, gameObject,
                                             sprites, animationDelay));
-    }
-
-    
+    }    
 }

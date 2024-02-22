@@ -60,10 +60,17 @@ public class ScoreDisplayer : MonoBehaviour
     IEnumerator OnDamage()
     {
         GameObject player = GameObject.Find("Player");
-        // Stop player movement animaton
+
         player.GetComponent<Animate>().StopAnimation();
+
         // Flash Sprite
-        yield return new WaitForSeconds(0.2f);
+        SpriteRenderer spriteRenderer = player.GetComponent<SpriteRenderer>();
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = Color.blue;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = Color.white;
+
         player.GetComponent<Animate>().RestartAnimation();
     }
 
