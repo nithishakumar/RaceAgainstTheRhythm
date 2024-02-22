@@ -1,69 +1,41 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreDisplayer : MonoBehaviour
 {
-    Subscription<UpdateScoreEvent> updateScoreEventSub;
-    Subscription<DisplayFinalScoreEvent> displayFinalScoreEventSub;
+    Subscription<ReduceHealth> reduceHealthSub;
+    List<Sprite> sprites = new List<Sprite>();
+    Image image;
+    int healthIdx = 0;
+
     void Start()
     {
-        updateScoreEventSub = EventBus.Subscribe<UpdateScoreEvent>(_OnScoreUpdated);
-        displayFinalScoreEventSub = EventBus.Subscribe<DisplayFinalScoreEvent>(_OnVictory);
+        reduceHealthSub = EventBus.Subscribe<ReduceHealth>(_OnReduceHealth);
+        for(int i = 0; i <= 8; i++)
+        {
+            sprites.Add(ResourceLoader.GetSprite("bar" + i.ToString()));
+        }
+        image = GetComponent<Image>();
     }
 
-    void _OnScoreUpdated(UpdateScoreEvent e)
+    void _OnReduceHealth(ReduceHealth e)
     {
-        TextMeshProUGUI textComp = GetComponent<TextMeshProUGUI>();
-        if (e.newScore < 0) e.newScore = 0;
-        textComp.text = e.newScore.ToString() + "%";
-        if(e.newScore >= 60)
+        if(healthIdx <= sprites.Count - 2)
         {
-            // Set to green
-            textComp.color = new Color(121f / 255f, 213f / 255f, 77f / 255f, 1f);
+            image.sprite = sprites[healthIdx];
+            healthIdx++;
         }
-        else if (e.newScore >= 50)
+        else if (healthIdx == sprites.Count - 1)
         {
-            // Set to yellow
-            textComp.color = new Color(253f / 255f, 189f / 255f, 26f / 255f, 1f);
+            image.sprite = sprites[healthIdx];
+            //  Trigger death
         }
-        else
-        {
-            // Set to red
-            textComp.color = new Color(253f / 255f, 27f / 255f, 50f / 255f, 1f);
-        }
-        if(e.newScore < 50)
-        {
-            EventBus.Publish<DeathEvent>(new DeathEvent());
-        }
-    }
-
-    void _OnVictory(DisplayFinalScoreEvent e)
-    {
-        StopAllCoroutines();
-        GameObject Victory = GameObject.Find("Canvas").transform.GetChild(1).gameObject;
-        Victory.SetActive(true);
-        GameObject VictoryText = Victory.transform.GetChild(0).gameObject;
-        GameObject accuracyText = VictoryText.transform.GetChild(0).gameObject;
-        accuracyText.GetComponent<TextMeshProUGUI>().text = "Your accuracy: " + e.accuracy.ToString() + "%";
-        accuracyText.SetActive(true);
     }
 
     private void OnDestroy()
     {
-        EventBus.Unsubscribe(updateScoreEventSub);
-        EventBus.Unsubscribe(displayFinalScoreEventSub);
+        EventBus.Unsubscribe(reduceHealthSub);
     }
 }
-
-public class UpdateScoreEvent
-{
-    public int newScore = 0;
-    public UpdateScoreEvent(int _newScore) { newScore = _newScore; }
-}
-
-public class DisplayFinalScoreEvent
-{
-    public int accuracy = 0;
-    public  DisplayFinalScoreEvent(int _accuracy) { accuracy = _accuracy; }
-}
-

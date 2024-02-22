@@ -53,7 +53,7 @@ public class RhythmEventManager : MonoBehaviour
 
     IEnumerator Despawn(GameObject safeTile)
     {
-        yield return new WaitForSeconds(secPerBeat);
+        yield return new WaitForSeconds(secPerBeat * 2);
         safeTile.tag = "tile";
     }
 
@@ -77,22 +77,4 @@ public class RhythmEventManager : MonoBehaviour
             spawnLocationIdx++;
         }
     }
-}
-
-public class MissedEvent
-{
-    public float score;
-    public float numBeats;
-    public MissedEvent(float _score, float _numBeats) { score = _score; numBeats = _numBeats; }
-}
-
-public class HitEvent
-{
-    public GameObject tileHit;
-    public HitEvent(GameObject _tileHit) { tileHit = _tileHit; }
-}
-
-public class DeathEvent
-{
-
 }

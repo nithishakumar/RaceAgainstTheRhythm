@@ -29,6 +29,15 @@ public class ResourceLoader
         loadedSprites["obstacle2"] = Resources.Load<Sprite>(spritePath + "obstacle2");
         loadedSprites["obstacle3"] = Resources.Load<Sprite>(spritePath + "obstacle3");
         loadedSprites["obstacle4"] = Resources.Load<Sprite>(spritePath + "obstacle4");
+        loadedSprites["bar0"] = Resources.Load<Sprite>(spritePath + "bar0");
+        loadedSprites["bar1"] = Resources.Load<Sprite>(spritePath + "bar1");
+        loadedSprites["bar2"] = Resources.Load<Sprite>(spritePath + "bar2");
+        loadedSprites["bar3"] = Resources.Load<Sprite>(spritePath + "bar3");
+        loadedSprites["bar4"] = Resources.Load<Sprite>(spritePath + "bar4");
+        loadedSprites["bar5"] = Resources.Load<Sprite>(spritePath + "bar5");
+        loadedSprites["bar6"] = Resources.Load<Sprite>(spritePath + "bar6");
+        loadedSprites["bar7"] = Resources.Load<Sprite>(spritePath + "bar7");
+        loadedSprites["bar8"] = Resources.Load<Sprite>(spritePath + "bar8");
     }
 
     private static void LoadSpritesFromSheet(string sheet)
