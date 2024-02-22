@@ -1,20 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class RhythmEventManager : MonoBehaviour
 {
-    Subscription<MissedEvent> missedEventSub;
-    Subscription<HitEvent> hitEventSub;
-    Subscription<DeathEvent> deathEventSub;
-
     public List<Transform> spawnLocations;
     List<Sprite> sprites = new List<Sprite>();
 
     int spawnLocationIdx = 0;
     int spriteIdx = 0;
-    int callCount = 0;
 
     Sprite safeTileSprite;
     Sprite glowSafeTileSprite;
@@ -22,19 +15,12 @@ public class RhythmEventManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        missedEventSub = EventBus.Subscribe<MissedEvent>(_OnRhythmMissed);
-        deathEventSub = EventBus.Subscribe<DeathEvent>(_OnDeath);
         sprites.Add(ResourceLoader.GetSprite("obstacle2"));
         sprites.Add(ResourceLoader.GetSprite("obstacle3"));
         sprites.Add(ResourceLoader.GetSprite("obstacle2"));
         sprites.Add(ResourceLoader.GetSprite("obstacle4"));
         safeTileSprite = ResourceLoader.GetSprite("obstacle1");
         glowSafeTileSprite = ResourceLoader.GetSprite("obstacle0");
-    }
-
-    void _OnRhythmMissed(MissedEvent e)
-    {
-       
     }
 
     public void ChangeTileSprite()
@@ -82,18 +68,6 @@ public class RhythmEventManager : MonoBehaviour
 
             spawnLocationIdx++;
         }
-    }
-
-    void _OnDeath(DeathEvent e)
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    private void OnDestroy()
-    {
-        EventBus.Unsubscribe(missedEventSub);
-        EventBus.Unsubscribe(hitEventSub);
-        EventBus.Unsubscribe(deathEventSub);
     }
 }
 

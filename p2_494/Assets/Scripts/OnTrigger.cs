@@ -1,29 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class OnTrigger : MonoBehaviour
 {
-    Conductor conductor;
+    Sprite obstacleSprite;
     // Start is called before the first frame update
     void Start()
     {
-        //conductor = GameObject.Find("Conductor").GetComponent<Conductor>();
+        obstacleSprite = ResourceLoader.GetSprite("obstacle4");
     }
 
     private void OnTriggerEnter(Collider other)
     {
         // Player entered a rhythm tile
-        if (other.gameObject.CompareTag("rhythm"))
+        if (other.gameObject.CompareTag("tile"))
         {
-            //conductor.playerOnRhythmTile = true;
-            //conductor.currentTile = other.gameObject;
+            Sprite currSprite = other.gameObject.GetComponent<SpriteRenderer>().sprite;
+            if(currSprite == obstacleSprite)
+            {
+                Debug.Log("death event!");
+            }
         }
-    }
-
-    private void OnDestroy()
-    {
-        //conductor.playerOnRhythmTile = false;
     }
 
 }
