@@ -8,9 +8,17 @@ public class RhythmEventManager : MonoBehaviour
     Subscription<MissedEvent> missedEventSub;
     Subscription<HitEvent> hitEventSub;
     Subscription<DeathEvent> deathEventSub;
+
+    public List<Transform> spawnLocations;
     List<Sprite> sprites = new List<Sprite>();
-    int spawnCount = 0;
+
+    int spawnLocationIdx = 0;
     int spriteIdx = 0;
+    int callCount = 0;
+
+    Sprite safeTileSprite;
+    Sprite glowSafeTileSprite;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +28,8 @@ public class RhythmEventManager : MonoBehaviour
         sprites.Add(ResourceLoader.GetSprite("obstacle3"));
         sprites.Add(ResourceLoader.GetSprite("obstacle2"));
         sprites.Add(ResourceLoader.GetSprite("obstacle4"));
-
+        safeTileSprite = ResourceLoader.GetSprite("obstacle1");
+        glowSafeTileSprite = ResourceLoader.GetSprite("obstacle0");
     }
 
     void _OnRhythmMissed(MissedEvent e)
@@ -34,8 +43,44 @@ public class RhythmEventManager : MonoBehaviour
         spriteIdx++;
         foreach (var tile in tiles)
         {
-            SpriteRenderer spriteRenderer = tile.GetComponent< SpriteRenderer>();
-            spriteRenderer.sprite = sprites[spriteIdx % sprites.Count];
+            if (tile.CompareTag("tile"))
+            {
+                SpriteRenderer spriteRenderer = tile.GetComponent<SpriteRenderer>();
+                spriteRenderer.sprite = sprites[spriteIdx % sprites.Count];
+            }
+            
+        }
+    }
+
+    public void DespawnOldTile()
+    {
+        GameObject[] safeTiles = GameObject.FindGameObjectsWithTag("safeTile");
+        foreach(var safeTile in safeTiles)
+        {
+            safeTile.tag = "tile";
+            SpriteRenderer spriteRenderer = safeTile.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = safeTileSprite;
+        }
+    }
+
+    public void SpawnTile()
+    {
+        DespawnOldTile();
+
+        if(spawnLocationIdx < spawnLocations.Count)
+        {
+            GameObject[] tiles = GameObject.FindGameObjectsWithTag("tile");
+            foreach(var tile in tiles)
+            {
+                if(tile.transform.position == spawnLocations[spawnLocationIdx].position)
+                {
+                    tile.tag = "safeTile";
+                    SpriteRenderer spriteRenderer =  tile.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = glowSafeTileSprite;
+                }
+            }
+
+            spawnLocationIdx++;
         }
     }
 

@@ -24,6 +24,7 @@ public class ResourceLoader
 
         string spritePath = mainPath + "Sprites/";
 
+        loadedSprites["obstacle0"] = Resources.Load<Sprite>(spritePath + "obstacle0");
         loadedSprites["obstacle1"] = Resources.Load<Sprite>(spritePath + "obstacle1");
         loadedSprites["obstacle2"] = Resources.Load<Sprite>(spritePath + "obstacle2");
         loadedSprites["obstacle3"] = Resources.Load<Sprite>(spritePath + "obstacle3");
