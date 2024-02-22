@@ -67,8 +67,9 @@ public class HandleDeathAndDamage : MonoBehaviour
 
             yield return new WaitForSeconds(0.1f);
         }
-        Destroy(gameObject);
-        yield return new WaitForSeconds(1f);
+        GetComponent<SpriteRenderer>().enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(true);
     }
 
     private void OnDestroy()
