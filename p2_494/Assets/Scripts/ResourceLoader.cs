@@ -56,8 +56,8 @@ public class ResourceLoader
 
     private static void LoadAudio()
     {
-        //string audioPath = mainPath + "Audio/";
-        //loadedAudio["rupeeSfx"] = Resources.Load<AudioClip>(audioPath + "Sound Effect (14)");
+        string audioPath = mainPath + "Audio/";
+        loadedAudio["damageSfx"] = Resources.Load<AudioClip>(audioPath + "damage");
     }
 
     private static void LoadPrefabs()

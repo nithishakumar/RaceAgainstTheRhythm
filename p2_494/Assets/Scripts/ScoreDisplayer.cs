@@ -1,5 +1,5 @@
+using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,12 +7,14 @@ public class ScoreDisplayer : MonoBehaviour
 {
     Subscription<ReduceHealth> reduceHealthSub;
     List<Sprite> sprites = new List<Sprite>();
+    AudioClip damageSfx;
     Image image;
     int healthIdx = 0;
 
     void Start()
     {
         reduceHealthSub = EventBus.Subscribe<ReduceHealth>(_OnReduceHealth);
+        damageSfx = ResourceLoader.GetAudioClip("damageSfx");
         for(int i = 1; i <= 8; i++)
         {
             sprites.Add(ResourceLoader.GetSprite("bar" + i.ToString()));
@@ -25,12 +27,18 @@ public class ScoreDisplayer : MonoBehaviour
         if(healthIdx <= sprites.Count - 2)
         {
             image.sprite = sprites[healthIdx];
+            AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
+            StartCoroutine(OnDamage());
             healthIdx++;
         }
         else if (healthIdx == sprites.Count - 1)
         {
-            image.sprite = sprites[healthIdx];
-            OnDeath();
+            if (image.sprite != sprites[healthIdx])
+            {
+                AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
+                image.sprite = sprites[healthIdx];
+                OnDeath();
+            }
         }
     }
 
@@ -43,10 +51,20 @@ public class ScoreDisplayer : MonoBehaviour
             Destroy(beatManager);
             GameObject player = GameObject.Find("Player");
             // Stop player movement animaton
-            player.GetComponent<Animate>().condition = false;
-            // Stop player movement
+            player.GetComponent<Animate>().StopAnimation();
+            // Disable player movement
             player.GetComponent<CharacterMovement>().enabled = false;
         }
+    }
+
+    IEnumerator OnDamage()
+    {
+        GameObject player = GameObject.Find("Player");
+        // Stop player movement animaton
+        player.GetComponent<Animate>().StopAnimation();
+        // Flash Sprite
+        yield return new WaitForSeconds(0.2f);
+        player.GetComponent<Animate>().RestartAnimation();
     }
 
     private void OnDestroy()

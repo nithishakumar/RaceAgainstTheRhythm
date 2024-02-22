@@ -9,3 +9,6 @@ https://www.youtube.com/watch?v=gIjajeyjRfE&t=625s
 Tilemap/Character Sprites:
 https://0x72.itch.io/dungeontileset-ii
 https://incolgames.itch.io/dungeon-platformer-tile-set-pixel-art
+
+Damage SFX:
+https://freesound.org/people/alphatrooper18/sounds/362422/

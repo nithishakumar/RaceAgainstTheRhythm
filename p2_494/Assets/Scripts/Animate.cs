@@ -6,11 +6,21 @@ public class Animate : MonoBehaviour
 {
     public Coroutine animRoutine;
     public Sprite[] sprites;
-    public bool condition = true;
+    bool condition = true;
     public float animationDelay = 0.25f;
 
     void Start()
     {
+        animRoutine = StartCoroutine(AnimUtilities.Animate(() => condition, gameObject,
+                                            sprites, animationDelay));
+    }
+    public void StopAnimation()
+    {
+        condition = false;
+    }
+    public void RestartAnimation()
+    {
+        condition = true;
         animRoutine = StartCoroutine(AnimUtilities.Animate(() => condition, gameObject,
                                             sprites, animationDelay));
     }
