@@ -44,6 +44,11 @@ public class CharacterMovement : MonoBehaviour
                 MoveToAdjacentTile(Vector3.up * verticalInput);
             }
         }
+        // Check if any movement input axis returns to 0 to stop movement
+        if (Mathf.Approximately(horizontalInput, 0f) && Mathf.Approximately(verticalInput, 0f))
+        {
+            isMoving = false;
+        }
     }
 
     bool CanMoveInDirection(Vector3 direction)

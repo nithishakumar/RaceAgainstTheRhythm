@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,12 +30,8 @@ public class RhythmEventManager : MonoBehaviour
         spriteIdx++;
         foreach (var tile in tiles)
         {
-            if (tile.CompareTag("tile"))
-            {
-                SpriteRenderer spriteRenderer = tile.GetComponent<SpriteRenderer>();
-                spriteRenderer.sprite = sprites[spriteIdx % sprites.Count];
-            }
-            
+            SpriteRenderer spriteRenderer = tile.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = sprites[spriteIdx % sprites.Count];
         }
     }
 
@@ -43,10 +40,16 @@ public class RhythmEventManager : MonoBehaviour
         GameObject[] safeTiles = GameObject.FindGameObjectsWithTag("safeTile");
         foreach(var safeTile in safeTiles)
         {
-            safeTile.tag = "tile";
             SpriteRenderer spriteRenderer = safeTile.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = safeTileSprite;
+            StartCoroutine(Despawn(safeTile));
         }
+    }
+
+    IEnumerator Despawn(GameObject safeTile)
+    {
+        yield return new WaitForSeconds(0.6f);
+        safeTile.tag = "tile";
     }
 
     public void SpawnTile()
