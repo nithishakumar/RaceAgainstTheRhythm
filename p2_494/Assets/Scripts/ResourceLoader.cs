@@ -28,8 +28,6 @@ public class ResourceLoader
         loadedSprites["obstacle2"] = Resources.Load<Sprite>(spritePath + "obstacle2");
         loadedSprites["obstacle3"] = Resources.Load<Sprite>(spritePath + "obstacle3");
         loadedSprites["obstacle4"] = Resources.Load<Sprite>(spritePath + "obstacle4");
-        loadedSprites["musicNote1_correct"] = Resources.Load<Sprite>(spritePath + "musicNote1_correct");
-        loadedSprites["musicNote1_0"] = Resources.Load<Sprite>(spritePath + "musicNote1_0");
     }
 
     private static void LoadSpritesFromSheet(string sheet)
@@ -55,9 +53,7 @@ public class ResourceLoader
     private static void LoadPrefabs()
     {
         string prefabPath = mainPath + "Prefabs/";
-        loadedPrefabs["musicNote1"] = Resources.Load<GameObject>(prefabPath + "musicNote1");
-        loadedPrefabs["missVisual"] = Resources.Load<GameObject>(prefabPath + "MissVisual");
-        loadedPrefabs["hitVisual"] = Resources.Load<GameObject>(prefabPath + "HitVisual");
+        //loadedPrefabs["musicNote1"] = Resources.Load<GameObject>(prefabPath + "musicNote1");
     }
 
     public static Sprite GetSprite(string spriteName)
