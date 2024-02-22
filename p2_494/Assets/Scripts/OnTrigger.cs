@@ -8,7 +8,7 @@ public class OnTrigger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        conductor = GameObject.Find("Conductor").GetComponent<Conductor>();
+        //conductor = GameObject.Find("Conductor").GetComponent<Conductor>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -16,14 +16,14 @@ public class OnTrigger : MonoBehaviour
         // Player entered a rhythm tile
         if (other.gameObject.CompareTag("rhythm"))
         {
-            conductor.playerOnRhythmTile = true;
-            conductor.currentTile = other.gameObject;
+            //conductor.playerOnRhythmTile = true;
+            //conductor.currentTile = other.gameObject;
         }
     }
 
     private void OnDestroy()
     {
-        conductor.playerOnRhythmTile = false;
+        //conductor.playerOnRhythmTile = false;
     }
 
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BeatManager : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class Intervals
 {
     public float steps;
     private int lastInterval;
+    public UnityEvent trigger;
     public float GetIntervalLength(float bpm)
     {
         return 60f / (bpm * steps);
@@ -41,6 +43,7 @@ public class Intervals
         if(Mathf.FloorToInt(interval) != lastInterval) {
             lastInterval = Mathf.FloorToInt(interval);
             Debug.Log(interval + " beat detected");
+            trigger.Invoke();
         }
     }
 }

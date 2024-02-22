@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7573647647024474807}
   - component: {fileID: 9179393700644804042}
-  - component: {fileID: 2111370661105291554}
   - component: {fileID: -4410974362336443948}
   m_Layer: 6
   m_Name: musicNote1
@@ -86,22 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2111370661105291554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3559842693195005830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa8c74300ae083342a99b19cf224d40d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 21300000, guid: 77d616a1614f12b479b84f7592c4b5ba, type: 3}
-  - {fileID: 21300000, guid: 1420f25f8263722469d3dbbf67066f6a, type: 3}
-  animationDelay: 0.6
 --- !u!65 &-4410974362336443948
 BoxCollider:
   m_ObjectHideFlags: 0

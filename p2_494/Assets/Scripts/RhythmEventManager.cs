@@ -1,88 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class RhythmEventManager : MonoBehaviour
 {
     Subscription<MissedEvent> missedEventSub;
     Subscription<HitEvent> hitEventSub;
     Subscription<DeathEvent> deathEventSub;
-    GameObject missVisual;
-    GameObject hitVisual;
-    Conductor conductor;
-
+    List<Sprite> sprites = new List<Sprite>();
+    int spawnCount = 0;
+    int spriteIdx = 0;
     // Start is called before the first frame update
     void Start()
     {
         missedEventSub = EventBus.Subscribe<MissedEvent>(_OnRhythmMissed);
-        hitEventSub = EventBus.Subscribe<HitEvent>(_OnRhythmHit);
         deathEventSub = EventBus.Subscribe<DeathEvent>(_OnDeath);
-        missVisual = ResourceLoader.GetPrefab("missVisual");
-        hitVisual = ResourceLoader.GetPrefab("hitVisual");
-        conductor = GameObject.Find("Conductor").GetComponent<Conductor>(); 
+        sprites.Add(ResourceLoader.GetSprite("obstacle2"));
+        sprites.Add(ResourceLoader.GetSprite("obstacle3"));
+        sprites.Add(ResourceLoader.GetSprite("obstacle2"));
+        sprites.Add(ResourceLoader.GetSprite("obstacle4"));
+
     }
 
     void _OnRhythmMissed(MissedEvent e)
     {
-        // Record event timestamp to prevent simultaneous events
-        conductor.lastEventTimeStamp = Time.time;
-
-        GameObject player = GameObject.Find("Player");
-        GameObject[] rhythmObjects = GameObject.FindGameObjectsWithTag("rhythm");
-        if (rhythmObjects.Length > 0)
-        {
-            // Find the closest rhythm gameobject to the player + destroy it
-            float minDistance = Vector3.Distance(rhythmObjects[0].transform.position, player.transform.position);
-            GameObject toDestroy = rhythmObjects[0];
-            for (int i = 1; i < rhythmObjects.Length; i++)
-            {
-                float currDistance = Vector3.Distance(rhythmObjects[i].transform.position, player.transform.position);
-                if (currDistance < minDistance)
-                {
-                    toDestroy = rhythmObjects[i];
-                }
-            }
-
-            // Spawn miss visual
-            Vector3 visualSpawnPos = toDestroy.transform.position;
-            visualSpawnPos.y += 0.5f;
-            GameObject.Instantiate(missVisual, visualSpawnPos, Quaternion.identity);
-
-            // Update Score
-            EventBus.Publish<UpdateScoreEvent>(new UpdateScoreEvent(Mathf.FloorToInt((e.score / e.numBeats) * 100)));
-
-            // Reset variables
-            conductor.playerOnRhythmTile = false;
-            conductor.currentTile = null;
-
-            // Destroy Tile
-            Destroy(toDestroy);
-        }
        
     }
 
-    void _OnRhythmHit(HitEvent e)
+    public void ChangeTileSprite()
     {
-        // Record event timestamp to prevent simultaneous events
-        conductor.lastEventTimeStamp = Time.time;
-
-        GameObject toDestroy = e.tileHit;
-        if (toDestroy != null)
+        GameObject[] tiles = GameObject.FindGameObjectsWithTag("tile");
+        spriteIdx++;
+        foreach (var tile in tiles)
         {
-            // Spawn hit visual
-            Vector3 visualSpawnPos = toDestroy.transform.position;
-            visualSpawnPos.y += 0.5f;
-            GameObject.Instantiate(hitVisual, visualSpawnPos, Quaternion.identity);
-
-            // Destroy tile
-            Destroy(toDestroy);
-
-            // Reset variables
-            conductor.playerOnRhythmTile = false;
-            conductor.currentTile = null;
+            SpriteRenderer spriteRenderer = tile.GetComponent< SpriteRenderer>();
+            spriteRenderer.sprite = sprites[spriteIdx % sprites.Count];
         }
     }
 

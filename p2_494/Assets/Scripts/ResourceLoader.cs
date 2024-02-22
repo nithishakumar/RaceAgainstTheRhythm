@@ -21,9 +21,15 @@ public class ResourceLoader
     private static void LoadAllSprites()
     {
         //LoadSpritesFromSheet("link_sprites");
-       
 
-        //loadedSprites["stalfos"] = Resources.Load<Sprite>(mainPath + "stalfos_1");
+        string spritePath = mainPath + "Sprites/";
+
+        loadedSprites["obstacle1"] = Resources.Load<Sprite>(spritePath + "obstacle1");
+        loadedSprites["obstacle2"] = Resources.Load<Sprite>(spritePath + "obstacle2");
+        loadedSprites["obstacle3"] = Resources.Load<Sprite>(spritePath + "obstacle3");
+        loadedSprites["obstacle4"] = Resources.Load<Sprite>(spritePath + "obstacle4");
+        loadedSprites["musicNote1_correct"] = Resources.Load<Sprite>(spritePath + "musicNote1_correct");
+        loadedSprites["musicNote1_0"] = Resources.Load<Sprite>(spritePath + "musicNote1_0");
     }
 
     private static void LoadSpritesFromSheet(string sheet)
