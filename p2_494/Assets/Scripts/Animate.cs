@@ -17,6 +17,7 @@ public class Animate : MonoBehaviour
     public void StopAnimation()
     {
         condition = false;
+        StopCoroutine(animRoutine);
     }
     public void RestartAnimation()
     {
