@@ -12,3 +12,6 @@ https://incolgames.itch.io/dungeon-platformer-tile-set-pixel-art
 
 Damage SFX:
 https://freesound.org/people/alphatrooper18/sounds/362422/
+
+Player Death SFX:
+https://freesound.org/people/Fupicat/sounds/475347/
