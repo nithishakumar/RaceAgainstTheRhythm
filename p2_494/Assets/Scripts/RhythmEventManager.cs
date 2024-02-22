@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class RhythmEventManager : MonoBehaviour
 {
+    public float bpm;
+    public float secPerBeat;
+
     public List<Transform> spawnLocations;
     List<Sprite> sprites = new List<Sprite>();
 
@@ -22,6 +25,8 @@ public class RhythmEventManager : MonoBehaviour
         sprites.Add(ResourceLoader.GetSprite("obstacle4"));
         safeTileSprite = ResourceLoader.GetSprite("obstacle1");
         glowSafeTileSprite = ResourceLoader.GetSprite("obstacle0");
+        secPerBeat = 60f / bpm;
+
     }
 
     public void ChangeTileSprite()
@@ -48,7 +53,7 @@ public class RhythmEventManager : MonoBehaviour
 
     IEnumerator Despawn(GameObject safeTile)
     {
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(secPerBeat);
         safeTile.tag = "tile";
     }
 
