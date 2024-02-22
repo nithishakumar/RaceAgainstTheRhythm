@@ -16,7 +16,6 @@ public class RhythmEventManager : MonoBehaviour
     Sprite safeTileSprite;
     Sprite glowSafeTileSprite;
 
-    // Start is called before the first frame update
     void Start()
     {
         sprites.Add(ResourceLoader.GetSprite("obstacle2"));
