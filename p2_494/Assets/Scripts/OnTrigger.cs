@@ -6,7 +6,7 @@ using UnityEngine;
 public class OnTrigger : MonoBehaviour
 {
     Sprite obstacleSprite;
-    Dictionary<GameObject, Boolean> tileStates = new Dictionary<GameObject, Boolean>();
+    public Dictionary<GameObject, Boolean> tileStates = new Dictionary<GameObject, Boolean>();
     public float bpm;
     float secPerBeat;
 
@@ -43,12 +43,14 @@ public class OnTrigger : MonoBehaviour
     {
         while (tileStates[tile])
         {
+            Debug.Log("detecting");
             Sprite currSprite = tile.GetComponent<SpriteRenderer>().sprite;
             if (currSprite == obstacleSprite)
             {
+                Debug.Log("detected");
                 EventBus.Publish<ReduceHealth>(new ReduceHealth());
                 // Don't reduce health multiple times in a row
-                yield return new WaitForSeconds(secPerBeat);
+                yield return new WaitForSeconds(secPerBeat * 1.5f);
             }
             yield return null;
         }

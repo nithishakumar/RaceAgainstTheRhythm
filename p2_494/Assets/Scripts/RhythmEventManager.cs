@@ -31,6 +31,7 @@ public class RhythmEventManager : MonoBehaviour
 
     public void ChangeTileSprite()
     {
+        // Change between different obstacle sprites every beat
         GameObject[] tiles = GameObject.FindGameObjectsWithTag("tile");
         spriteIdx++;
         foreach (var tile in tiles)
@@ -42,6 +43,7 @@ public class RhythmEventManager : MonoBehaviour
 
     public void DespawnOldTile()
     {
+        // Change tile sprite to safe zone sprite and allow for it to display spikes after a delay
         GameObject[] safeTiles = GameObject.FindGameObjectsWithTag("safeTile");
         foreach(var safeTile in safeTiles)
         {
@@ -53,6 +55,7 @@ public class RhythmEventManager : MonoBehaviour
 
     IEnumerator Despawn(GameObject safeTile)
     {
+        // Display spike obstacles after a delay
         yield return new WaitForSeconds(secPerBeat * 2);
         safeTile.tag = "tile";
     }

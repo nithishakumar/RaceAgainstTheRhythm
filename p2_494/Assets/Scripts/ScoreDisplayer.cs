@@ -13,7 +13,7 @@ public class ScoreDisplayer : MonoBehaviour
     void Start()
     {
         reduceHealthSub = EventBus.Subscribe<ReduceHealth>(_OnReduceHealth);
-        for(int i = 0; i <= 8; i++)
+        for(int i = 1; i <= 8; i++)
         {
             sprites.Add(ResourceLoader.GetSprite("bar" + i.ToString()));
         }
@@ -30,7 +30,22 @@ public class ScoreDisplayer : MonoBehaviour
         else if (healthIdx == sprites.Count - 1)
         {
             image.sprite = sprites[healthIdx];
-            //  Trigger death
+            OnDeath();
+        }
+    }
+
+    void OnDeath()
+    {
+        GameObject beatManager = GameObject.Find("BeatManager");
+        if(beatManager != null)
+        {
+            // Stop audio source
+            Destroy(beatManager);
+            GameObject player = GameObject.Find("Player");
+            // Stop player movement animaton
+            player.GetComponent<Animate>().condition = false;
+            // Stop player movement
+            player.GetComponent<CharacterMovement>().enabled = false;
         }
     }
 
