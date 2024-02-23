@@ -8,7 +8,16 @@ public class HealthDisplayer : MonoBehaviour
     List<Sprite> sprites = new List<Sprite>();
     AudioClip damageSfx;
     Image image;
-    int healthIdx = 0;
+    public static int healthIdx = 0;
+
+    private void Awake()
+    {
+        // Set health to 0
+        if (RhythmEventManager.wasSceneReloaded)
+        {
+            healthIdx = 0;
+        }
+    }
 
     void Start()
     {
