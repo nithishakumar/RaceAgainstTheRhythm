@@ -58,6 +58,7 @@ public class RhythmEventManager : MonoBehaviour
     public void Restart()
     {
         wasSceneReloaded = true;
+        GameObject.Find("Canvas").transform.GetChild(1).transform.gameObject.SetActive(false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

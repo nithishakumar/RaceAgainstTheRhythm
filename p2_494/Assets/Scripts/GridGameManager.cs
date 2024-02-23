@@ -14,6 +14,7 @@ public class GridGameManager : MonoBehaviour
     Sprite hitGridSprite;
     Sprite defaultGridSprite;
     Sprite tileSprite;
+    Sprite stairsSprite;
 
     // For Determining where to spawn music note in grid system
     public LayerMask mask;
@@ -31,6 +32,8 @@ public class GridGameManager : MonoBehaviour
     Subscription<DisplayHitOrMissEvent> displayHitOrMissSub;
     Subscription<OnTrappedEvent> onTrappedSub;
 
+    public GameObject stairsLocation;
+
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +42,7 @@ public class GridGameManager : MonoBehaviour
         hitGridSprite = ResourceLoader.GetSprite("hitSprite");
         defaultGridSprite = ResourceLoader.GetSprite("defaultSprite");
         tileSprite = ResourceLoader.GetSprite("tile1");
+        stairsSprite = ResourceLoader.GetSprite("stairs");
 
         hitSfx = ResourceLoader.GetAudioClip("blipSfx");
         damageSfx = ResourceLoader.GetAudioClip("damageSfx");
@@ -165,6 +169,9 @@ public class GridGameManager : MonoBehaviour
             }
             // Stop spawning tiles
             shouldSpawn = false;
+            // Add stairs sprite
+            stairsLocation.GetComponent<SpriteRenderer>().sprite = stairsSprite;
+            stairsLocation.tag = "stairs";
         }
     }
 
