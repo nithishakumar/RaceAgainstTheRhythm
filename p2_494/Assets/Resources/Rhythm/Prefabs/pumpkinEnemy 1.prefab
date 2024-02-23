@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 803267417847108747}
   - component: {fileID: 5486669068361910653}
   - component: {fileID: 1616420758436325399}
+  - component: {fileID: 6087826882128263036}
+  - component: {fileID: 7497244579971313675}
   m_Layer: 0
   m_Name: pumpkinEnemy 1
   m_TagString: Untagged
@@ -107,3 +109,51 @@ MonoBehaviour:
   - {fileID: -452899021, guid: 591efd22e7b98c846bfed82ccfc43508, type: 3}
   - {fileID: -793548195, guid: 591efd22e7b98c846bfed82ccfc43508, type: 3}
   animationDelay: 0.1
+--- !u!65 &6087826882128263036
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478746628224509509}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.57, y: 1.7463385, z: 0.2}
+  m_Center: {x: 0, y: -0.10183078, z: 0}
+--- !u!54 &7497244579971313675
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478746628224509509}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
