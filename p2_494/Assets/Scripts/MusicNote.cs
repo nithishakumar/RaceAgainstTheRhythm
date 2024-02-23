@@ -4,13 +4,7 @@ using UnityEngine;
 public class MusicNote : MonoBehaviour
 {
     string state = "miss";
-
     public GameObject tile;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -39,13 +33,15 @@ public class MusicNote : MonoBehaviour
     {
         if (tile != null)
         {
-            GameObject.Find("RhythmEventManager").GetComponent<RhythmEventManager>().StartGridTileRoutine(tile, state);
+            EventBus.Publish<DisplayHitOrMissEvent>(new DisplayHitOrMissEvent(tile, state));
         }        
     }
+}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+public class DisplayHitOrMissEvent
+{
+    public GameObject tile;
+    public string state;
+    public DisplayHitOrMissEvent(GameObject _tile, string _state) { tile = _tile; state = _state; }
+
 }

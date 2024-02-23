@@ -18,6 +18,8 @@ public class RhythmEventManager : MonoBehaviour
     Sprite hitSprite;
     Sprite defaultSprite;
 
+    Subscription<DisplayHitOrMissEvent> displayHitOrMissSub;
+
     void Start()
     {
         switchSprites.Add(ResourceLoader.GetSprite("obstacle4"));
@@ -27,6 +29,8 @@ public class RhythmEventManager : MonoBehaviour
         missSprite = ResourceLoader.GetSprite("missSprite");
         hitSprite = ResourceLoader.GetSprite("hitSprite");
         defaultSprite = ResourceLoader.GetSprite("defaultSprite");
+
+        displayHitOrMissSub = EventBus.Subscribe<DisplayHitOrMissEvent>(_OnDisplayHitOrMiss);
     }
 
     public void SwitchTileSprite()
@@ -86,9 +90,9 @@ public class RhythmEventManager : MonoBehaviour
         }
     }
 
-    public void StartGridTileRoutine(GameObject tile, string state)
+    public void _OnDisplayHitOrMiss(DisplayHitOrMissEvent e)
     {
-        StartCoroutine(GridTileRoutine(tile, state));
+        StartCoroutine(GridTileRoutine(e.tile, e.state));
     }
 
     IEnumerator GridTileRoutine(GameObject tile, string state)
@@ -110,5 +114,10 @@ public class RhythmEventManager : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.Unsubscribe(displayHitOrMissSub);
     }
 }
