@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OnTrigger : MonoBehaviour
+public class OnTriggerSpikeObstacles : MonoBehaviour
 {
     Sprite obstacleSprite;
     public Dictionary<GameObject, Boolean> tileStates = new Dictionary<GameObject, Boolean>();

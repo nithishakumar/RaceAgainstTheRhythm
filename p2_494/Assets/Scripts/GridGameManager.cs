@@ -9,15 +9,21 @@ public class GridGameManager : MonoBehaviour
     float secPerBeat;
 
     // Grid Sprites
-    bool startSpawn = false;
+    bool shouldSpawn = false;
     Sprite missGridSprite;
     Sprite hitGridSprite;
     Sprite defaultGridSprite;
+    Sprite tileSprite;
+
     // For Determining where to spawn music note in grid system
     public LayerMask mask;
     public float noteDurationBeforeMiss = 1.3f;
     int numMisses = 0;
+    int numHits = 0;
     public int freeMisses;
+
+    // No. of hits required to be released from trap
+    public int hitThreshold;
 
     AudioClip damageSfx;
     AudioClip hitSfx;
@@ -32,6 +38,7 @@ public class GridGameManager : MonoBehaviour
         missGridSprite = ResourceLoader.GetSprite("missSprite");
         hitGridSprite = ResourceLoader.GetSprite("hitSprite");
         defaultGridSprite = ResourceLoader.GetSprite("defaultSprite");
+        tileSprite = ResourceLoader.GetSprite("tile1");
 
         hitSfx = ResourceLoader.GetAudioClip("blipSfx");
         damageSfx = ResourceLoader.GetAudioClip("damageSfx");
@@ -52,11 +59,11 @@ public class GridGameManager : MonoBehaviour
     IEnumerator StartSpawnAfterDelay()
     {
         yield return new WaitForSeconds(1f);
-        startSpawn = true;
+        shouldSpawn = true;
     }
     public void SpawnMusicNote()
     {
-        if (!startSpawn)
+        if (!shouldSpawn)
         {
             return;
         }
@@ -111,30 +118,56 @@ public class GridGameManager : MonoBehaviour
 
     IEnumerator GridTileRoutine(GameObject tile, string state)
     {
-        if (state == "miss")
+        if (shouldSpawn)
         {
-            numMisses++;
-            AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
-            tile.GetComponent<SpriteRenderer>().sprite = missGridSprite;
-            if (RhythmEventManager.wasSceneReloaded || numMisses > freeMisses)
+            if (state == "miss")
             {
-                // Reduce health on every other miss
-                if (numMisses % 2 == 0)
+                numMisses++;
+                AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
+                tile.GetComponent<SpriteRenderer>().sprite = missGridSprite;
+                if (RhythmEventManager.wasSceneReloaded || numMisses > freeMisses)
                 {
-                    EventBus.Publish<ReduceHealth>(new ReduceHealth());
+                    // Reduce health on every other miss
+                    if (numMisses % 2 == 0)
+                    {
+                        EventBus.Publish<ReduceHealth>(new ReduceHealth());
+                    }
                 }
             }
-        }
-        else
-        {
-            AudioSource.PlayClipAtPoint(hitSfx, Camera.main.transform.position);
-            tile.GetComponent<SpriteRenderer>().sprite = hitGridSprite;
-        }
+            // Hit event
+            else
+            {
+                numHits++;
+                ReleaseTrap();
+                Debug.Log("num hits: " + numHits);
+                AudioSource.PlayClipAtPoint(hitSfx, Camera.main.transform.position);
+                tile.GetComponent<SpriteRenderer>().sprite = hitGridSprite;
+            }
 
-        yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.3f);
 
-        tile.GetComponent<SpriteRenderer>().sprite = defaultGridSprite;
+            tile.GetComponent<SpriteRenderer>().sprite = defaultGridSprite;
+        }
     }
+
+    public void ReleaseTrap()
+    {
+        if(numHits > hitThreshold)
+        {
+            Debug.Log("entered release trap");
+            GameObject[] obstacles = GameObject.FindGameObjectsWithTag("release");
+            foreach(var obstacle in obstacles)
+            {
+                obstacle.GetComponent<SpriteRenderer>().sprite = tileSprite;
+                obstacle.GetComponent<Collider>().isTrigger = true;
+                // Reset to default layer
+                obstacle.layer = 0;
+            }
+            // Stop spawning tiles
+            shouldSpawn = false;
+        }
+    }
+
     private void OnDestroy()
     {
         EventBus.Unsubscribe(displayHitOrMissSub);

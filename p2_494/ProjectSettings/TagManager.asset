@@ -8,6 +8,7 @@ TagManager:
   - grid
   - rhythm
   - trap
+  - release
   layers:
   - Default
   - TransparentFX
