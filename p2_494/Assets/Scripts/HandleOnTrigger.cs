@@ -30,6 +30,7 @@ public class HandleOnTrigger : MonoBehaviour
         {
             // trigger transition event
             Debug.Log("trigger transition");
+            // Set scene reloaded to false!
         }
     }
 
