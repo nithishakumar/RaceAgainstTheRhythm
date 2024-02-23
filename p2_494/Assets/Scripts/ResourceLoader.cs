@@ -29,6 +29,8 @@ public class ResourceLoader
         loadedSprites["obstacle2"] = Resources.Load<Sprite>(spritePath + "obstacle2");
         loadedSprites["obstacle3"] = Resources.Load<Sprite>(spritePath + "obstacle3");
         loadedSprites["obstacle4"] = Resources.Load<Sprite>(spritePath + "obstacle4");
+        loadedSprites["boxObstacle"] = Resources.Load<Sprite>(spritePath + "boxObstacle2");
+        loadedSprites["tile1"] = Resources.Load<Sprite>(spritePath + "tile1");
         loadedSprites["bar0"] = Resources.Load<Sprite>(spritePath + "bar0");
         loadedSprites["bar1"] = Resources.Load<Sprite>(spritePath + "bar1");
         loadedSprites["bar2"] = Resources.Load<Sprite>(spritePath + "bar2");
@@ -59,12 +61,13 @@ public class ResourceLoader
         string audioPath = mainPath + "Audio/";
         loadedAudio["damageSfx"] = Resources.Load<AudioClip>(audioPath + "damage");
         loadedAudio["deathSfx"] = Resources.Load<AudioClip>(audioPath + "death");
+        loadedAudio["blipSfx"] = Resources.Load<AudioClip>(audioPath + "blip");
     }
 
     private static void LoadPrefabs()
     {
         string prefabPath = mainPath + "Prefabs/";
-        //loadedPrefabs["musicNote1"] = Resources.Load<GameObject>(prefabPath + "musicNote1");
+        loadedPrefabs["musicNote1"] = Resources.Load<GameObject>(prefabPath + "musicNote1");
     }
 
     public static Sprite GetSprite(string spriteName)

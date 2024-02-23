@@ -19,7 +19,7 @@ public class OnTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // Player entered a tile
-        if (other.gameObject.CompareTag("tile") || other.gameObject.CompareTag("safeTile"))
+        if (other.gameObject.CompareTag("switch"))
         {
             tileStates[other.gameObject] = true;
             // Start waiting for the player to touch a spike sprite
@@ -31,7 +31,7 @@ public class OnTrigger : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         // Player left a tile
-        if (other.gameObject.CompareTag("tile") || other.gameObject.CompareTag("safeTile"))
+        if (other.gameObject.CompareTag("switch"))
         {
             // Stop waiting for the player to touch a spike sprite
             tileStates[other.gameObject] = false;

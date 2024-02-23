@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,75 +11,52 @@ public class RhythmEventManager : MonoBehaviour
     public float secPerBeat;
 
     public List<Transform> spawnLocations;
-    List<Sprite> sprites = new List<Sprite>();
+    List<Sprite> switchSprites = new List<Sprite>();
 
-    int spawnLocationIdx = 0;
     int spriteIdx = 0;
+    public LayerMask mask;
 
-    Sprite safeTileSprite;
-    Sprite glowSafeTileSprite;
 
     void Start()
     {
-        sprites.Add(ResourceLoader.GetSprite("obstacle2"));
-        sprites.Add(ResourceLoader.GetSprite("obstacle3"));
-        sprites.Add(ResourceLoader.GetSprite("obstacle2"));
-        sprites.Add(ResourceLoader.GetSprite("obstacle4"));
-        safeTileSprite = ResourceLoader.GetSprite("obstacle1");
-        glowSafeTileSprite = ResourceLoader.GetSprite("obstacle0");
+        switchSprites.Add(ResourceLoader.GetSprite("obstacle4"));
+        switchSprites.Add(ResourceLoader.GetSprite("obstacle1"));
         secPerBeat = 60f / bpm;
 
     }
 
-    public void ChangeTileSprite()
+    public void SwitchTileSprite()
     {
-        // Change between different obstacle sprites every beat
-        GameObject[] tiles = GameObject.FindGameObjectsWithTag("tile");
+        // Switch sprites to be obstacles
+        GameObject[] tiles = GameObject.FindGameObjectsWithTag("switch");
         spriteIdx++;
         foreach (var tile in tiles)
         {
             SpriteRenderer spriteRenderer = tile.GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = sprites[spriteIdx % sprites.Count];
+            spriteRenderer.sprite = switchSprites[spriteIdx % switchSprites.Count];
         }
     }
 
-    public void DespawnOldTile()
+    public void SpawnMusicNote()
     {
-        // Change tile sprite to safe zone sprite and allow for it to display spikes after a delay
-        GameObject[] safeTiles = GameObject.FindGameObjectsWithTag("safeTile");
-        foreach(var safeTile in safeTiles)
+        GameObject[] gridTiles = GameObject.FindGameObjectsWithTag("grid");
+        List<GameObject> randomCandidates = new List<GameObject>();
+        foreach(var tile in gridTiles)
         {
-            SpriteRenderer spriteRenderer = safeTile.GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = safeTileSprite;
-            StartCoroutine(Despawn(safeTile));
-        }
-    }
-
-    IEnumerator Despawn(GameObject safeTile)
-    {
-        // Display spike obstacles after a delay
-        yield return new WaitForSeconds(secPerBeat * 2);
-        safeTile.tag = "tile";
-    }
-
-    public void SpawnTile()
-    {
-        DespawnOldTile();
-
-        if(spawnLocationIdx < spawnLocations.Count)
-        {
-            GameObject[] tiles = GameObject.FindGameObjectsWithTag("tile");
-            foreach(var tile in tiles)
+            Collider[] colliders = Physics.OverlapSphere(tile.transform.position, 0.05f, mask);
+            if(colliders.Length <= 0)
             {
-                if(tile.transform.position == spawnLocations[spawnLocationIdx].position)
-                {
-                    tile.tag = "safeTile";
-                    SpriteRenderer spriteRenderer =  tile.GetComponent<SpriteRenderer>();
-                    spriteRenderer.sprite = glowSafeTileSprite;
-                }
+                randomCandidates.Add(tile);
             }
+        }
 
-            spawnLocationIdx++;
+        Debug.Log("random candidates: " + randomCandidates.Count);
+        if (randomCandidates.Count > 0)
+        {
+            var random = new System.Random();
+            int idx = random.Next(randomCandidates.Count);
+            GameObject.Instantiate(ResourceLoader.GetPrefab("musicNote1"), 
+                randomCandidates[idx].transform.position, Quaternion.identity);
         }
     }
 
