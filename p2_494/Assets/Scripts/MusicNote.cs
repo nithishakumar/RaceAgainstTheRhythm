@@ -37,7 +37,6 @@ public class MusicNote : MonoBehaviour
         }        
     }
 }
-
 public class DisplayHitOrMissEvent
 {
     public GameObject tile;

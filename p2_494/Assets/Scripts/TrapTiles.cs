@@ -23,6 +23,7 @@ public class TrapTiles : MonoBehaviour
                 {
                     Debug.Log("found");
                     Trap();
+                    EventBus.Publish<OnTrappedEvent>(new OnTrappedEvent());
                     break;
                 }
             }
@@ -32,6 +33,7 @@ public class TrapTiles : MonoBehaviour
 
     void Trap()
     {
+        GameObject.Find("Player").GetComponent<CharacterMovement>().enabled = false;
         moved = true;
         GameObject[] traps = GameObject.FindGameObjectsWithTag("trap");
         foreach (var trap in traps)
@@ -40,5 +42,6 @@ public class TrapTiles : MonoBehaviour
             trap.layer = 3;
             trap.GetComponent<SpriteRenderer>().sprite = ResourceLoader.GetSprite("boxObstacle");
         }
+        GameObject.Find("Player").GetComponent<CharacterMovement>().enabled = true;
     }
 }
