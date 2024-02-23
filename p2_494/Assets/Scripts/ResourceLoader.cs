@@ -40,6 +40,10 @@ public class ResourceLoader
         loadedSprites["bar6"] = Resources.Load<Sprite>(spritePath + "bar6");
         loadedSprites["bar7"] = Resources.Load<Sprite>(spritePath + "bar7");
         loadedSprites["bar8"] = Resources.Load<Sprite>(spritePath + "bar8");
+
+        loadedSprites["defaultSprite"] = Resources.Load<Sprite>(spritePath + "darkTile");
+        loadedSprites["hitSprite"] = Resources.Load<Sprite>(spritePath + "hitTile");
+        loadedSprites["missSprite"] = Resources.Load<Sprite>(spritePath + "missTile");
     }
 
     private static void LoadSpritesFromSheet(string sheet)

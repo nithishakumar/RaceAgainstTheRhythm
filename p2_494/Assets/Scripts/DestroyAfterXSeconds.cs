@@ -9,21 +9,16 @@ public class DestroyAfterXSeconds : MonoBehaviour
 
     void Start()
     {
-        if (startAutomatically)
-        {
-            StartCoroutine(DestroyRoutine(x));
-        }
-
+        StartCoroutine(DestroyRoutine());
+        
     }
 
-    IEnumerator DestroyRoutine(float x)
+    IEnumerator DestroyRoutine()
     {
         yield return new WaitForSeconds(x);
-        Destroy(gameObject);
-    }
-
-    public void StartDestroyRoutine(float x)
-    {
-        StartCoroutine (DestroyRoutine(x));
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
     }
 }

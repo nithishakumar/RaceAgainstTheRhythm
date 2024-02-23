@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 809647232551490268}
   - component: {fileID: 3383264466163917515}
   - component: {fileID: -4821710718804044294}
-  - component: {fileID: -8015890196109498265}
+  - component: {fileID: -4323817933140062895}
   m_Layer: 0
   m_Name: musicNote1
   m_TagString: rhythm
@@ -105,9 +105,9 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-8015890196109498265
+  m_Size: {x: 0.556876, y: 0.6597451, z: 0.20000002}
+  m_Center: {x: 0.011868611, y: -0.007912943, z: 0}
+--- !u!114 &-4323817933140062895
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,8 +116,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 990025157853286345}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b19c04df71fd13049811759a81c668f6, type: 3}
+  m_Script: {fileID: 11500000, guid: 7b97381aa16279540a25230f37496a6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 0
-  startAutomatically: 0
+  tile: {fileID: 0}

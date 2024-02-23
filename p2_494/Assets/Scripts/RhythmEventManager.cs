@@ -14,12 +14,19 @@ public class RhythmEventManager : MonoBehaviour
     List<Sprite> switchSprites = new List<Sprite>();
     int spriteIdx = 0;
 
+    Sprite missSprite;
+    Sprite hitSprite;
+    Sprite defaultSprite;
+
     void Start()
     {
         switchSprites.Add(ResourceLoader.GetSprite("obstacle4"));
         switchSprites.Add(ResourceLoader.GetSprite("obstacle1"));
         secPerBeat = 60f / bpm;
 
+        missSprite = ResourceLoader.GetSprite("missSprite");
+        hitSprite = ResourceLoader.GetSprite("hitSprite");
+        defaultSprite = ResourceLoader.GetSprite("defaultSprite");
     }
 
     public void SwitchTileSprite()
@@ -45,8 +52,13 @@ public class RhythmEventManager : MonoBehaviour
             // Ensure there is nothing on the tile and the player isn't too far away from the tile
             if(colliders.Length <= 0 && Vector3.Distance(player.transform.position, tile.transform.position) <= 1.5)
             {
-                GameObject[] musicNotes = GameObject.FindGameObjectsWithTag("rhythm");
                 bool indicator = true;
+                if(tile.GetComponent<SpriteRenderer>().sprite != defaultSprite)
+                {
+                    indicator = false;
+                }
+
+                GameObject[] musicNotes = GameObject.FindGameObjectsWithTag("rhythm");
                 foreach(var note in musicNotes)
                 {
                     // Ensure this tile isn't too far away from a previously spawned note that the player has to go to
@@ -69,8 +81,30 @@ public class RhythmEventManager : MonoBehaviour
             int idx = random.Next(randomCandidates.Count);
             GameObject rhythm = GameObject.Instantiate(ResourceLoader.GetPrefab("musicNote1"), 
                 randomCandidates[idx].transform.position, Quaternion.identity);
-            rhythm.GetComponent<DestroyAfterXSeconds>().StartDestroyRoutine(secPerBeat * 1.5f);
+            rhythm.GetComponent<MusicNote>().tile = randomCandidates[idx];
+            rhythm.GetComponent<MusicNote>().StartDestroyRoutine(secPerBeat * 1.15f);
         }
+    }
+
+    public void StartGridTileRoutine(GameObject tile, string state)
+    {
+        StartCoroutine(GridTileRoutine(tile, state));
+    }
+
+    IEnumerator GridTileRoutine(GameObject tile, string state)
+    {
+        if(state == "miss")
+        {
+            tile.GetComponent<SpriteRenderer>().sprite = missSprite;
+        }
+        else
+        {
+            tile.GetComponent<SpriteRenderer>().sprite = hitSprite;
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
+        tile.GetComponent<SpriteRenderer>().sprite = defaultSprite;
     }
 
     public void Restart()
