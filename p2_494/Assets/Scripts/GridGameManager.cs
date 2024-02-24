@@ -242,11 +242,14 @@ public class GridGameManager : MonoBehaviour
             {
                 GameObject.Instantiate(collectible, collectibleLocation.transform.position, Quaternion.identity);
             }
-            GetComponent<EnemySpawner>().shouldSpawn = false;
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
-            foreach(var enemy in enemies)
-            {
-                Destroy(enemy);
+            EnemySpawner e = GetComponent<EnemySpawner>();
+            if (e != null)
+            {   e.shouldSpawn = false;
+                GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
+                foreach (var enemy in enemies)
+                {
+                    Destroy(enemy);
+                }
             }
         }
     }
