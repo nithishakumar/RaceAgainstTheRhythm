@@ -85,6 +85,11 @@ public class HandleOnTrigger : MonoBehaviour
 
     void ForwardTransition()
     {
+        CharacterMovement movement = GetComponent<CharacterMovement>();
+        if(movement != null)
+        {
+            movement.enabled = false;
+        }
         RhythmEventManager.wasSceneReloaded = false;
         string currScene = SceneManager.GetActiveScene().name;
         if (forwardTransition.ContainsKey(currScene))
@@ -99,6 +104,11 @@ public class HandleOnTrigger : MonoBehaviour
 
     void BackwardTransition()
     {
+        CharacterMovement movement = GetComponent<CharacterMovement>();
+        if (movement != null)
+        {
+            movement.enabled = false;
+        }
         RhythmEventManager.wasSceneReloaded = false;
         string currScene = SceneManager.GetActiveScene().name;
         if (backwardTransition.ContainsKey(currScene))
