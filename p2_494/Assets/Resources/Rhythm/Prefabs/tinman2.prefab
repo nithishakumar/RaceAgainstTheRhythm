@@ -174,5 +174,5 @@ MonoBehaviour:
   track: 6
   moveSpeed: 10
   destructionTimeFactor: 2
-  offset: {x: 0.4, y: 0, z: 0}
+  offset: {x: 0.45, y: 0, z: 0}
   speedFactor: 0.5

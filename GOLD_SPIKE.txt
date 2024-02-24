@@ -1,3 +1,0 @@
-The player has to reach a target Rhythm tile by the fourth beat and then press the spacebar - this counts as a hit. If they don't do so by the fourth beat (press spacebar while not on a rhythm tile or are too early/late), they miss. The tiles closest to the player disappear after a specific time interval which also counts as a miss.
-
-*Please ignore the first 4 beats - they are for your reference! (Will add guidance later)

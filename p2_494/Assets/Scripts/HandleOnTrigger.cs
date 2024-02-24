@@ -18,6 +18,7 @@ public class HandleOnTrigger : MonoBehaviour
         obstacleSprite = ResourceLoader.GetSprite("obstacle4");
         secPerBeat = 60f / bpm;
         forwardTransition["Room 1"] = "Room 2";
+        forwardTransition["Room 2"] = "Victory";
         backwardTransition["Room 2"] = "Room 1";
     }
 
@@ -48,6 +49,7 @@ public class HandleOnTrigger : MonoBehaviour
         else if (other.gameObject.CompareTag("potion"))
         {
             // Collect potion
+            EventBus.Publish<UpdatePotionEvent>(new UpdatePotionEvent(30));
             Destroy(other.gameObject);
         }
     }
@@ -87,6 +89,10 @@ public class HandleOnTrigger : MonoBehaviour
         string currScene = SceneManager.GetActiveScene().name;
         if (forwardTransition.ContainsKey(currScene))
         {
+            if(forwardTransition[currScene] == "Room 2")
+            {
+                GameObject.Find("Canvas").transform.GetChild(2).gameObject.SetActive(true);
+            }
             SceneManager.LoadScene(forwardTransition[currScene]);
         }
     }

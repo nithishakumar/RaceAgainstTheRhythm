@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class GridGameManager : MonoBehaviour
 {
     public float bpm;
-    float secPerBeat;
+    public float secPerBeat;
 
     // Grid Sprites
     bool shouldSpawn = false;
@@ -192,8 +192,8 @@ public class GridGameManager : MonoBehaviour
                 tile.GetComponent<SpriteRenderer>().sprite = missGridSprite;
                 if (RhythmEventManager.wasSceneReloaded || numMisses > freeMisses)
                 {
-                    // Reduce health on every third miss
-                    if (numMisses % 3 == 0)
+                    // Reduce health on every second miss
+                    if (numMisses % 2 == 0)
                     {
                         EventBus.Publish<ReduceHealth>(new ReduceHealth());
                     }

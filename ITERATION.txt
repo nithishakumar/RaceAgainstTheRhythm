@@ -1,0 +1,13 @@
+After playtesting, I was told the following:
+- Didn't provide enough visual feedback. Perhaps animate the rhythm blocks in sync with the music.
+- Issues with syncing the music to the player's movement.
+- Having to get to a safe tile by the fourth beat made the game feel less rhythmic. Make the player move in shorter intervals so the player can move more with the beat.
+- Try faster music and add more complexity.
+- There is lack of guidance.
+- Obstacles look like they could be walked over, not clear what are obstacles
+- Player movement should more abruptly come to stop when the input keys are released.
+
+I accounted for each one of these factors in my game. I changed my whole mechanic since an IA mentioned that the game was not very rhtyhmic (instead focused on a time crunch) since the player just had to go to a safe zone by the fourth beat. In my new mechanic, notes are spawned at every beat or every other beat so the player moves more often in sync with the music. I synced the animation of rhythm blocks to the music (spawned a note when a beat was detected) and added a new level where players have to defeat enemy to the beat of faster music with the challenge of using their potion resource correctly. This would make it so that the game isn't just the user mindlessly clicking on keys - the user has to decide whether they want to use a potion or not. I added guidance with minimal text by trapping the player in an environment where they can learn about the game's mechanics without losing hit points for a while.
+
+Main game mechanic: get to the rhythm tile when it has a yellow music note (note is spawned in sync with the beat of the music).
+Controls: arrow keys + spacebar

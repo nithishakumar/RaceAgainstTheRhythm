@@ -172,6 +172,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   track: 3
   moveSpeed: 10
-  destructionTimeFactor: 1
-  offset: {x: 0.7, y: 0, z: 0}
+  destructionTimeFactor: 1.2
+  offset: {x: 0.8, y: 0, z: 0}
   speedFactor: 1
