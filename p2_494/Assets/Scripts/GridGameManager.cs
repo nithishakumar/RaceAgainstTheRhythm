@@ -34,6 +34,8 @@ public class GridGameManager : MonoBehaviour
     Subscription<OnTrappedEvent> onTrappedSub;
 
     public GameObject stairsLocation;
+    public GameObject collectible;
+    public GameObject collectibleLocation;
 
     public List<GameObject> predefinedLocations;
     int numBeats = 0;
@@ -146,7 +148,7 @@ public class GridGameManager : MonoBehaviour
             if (collider.gameObject.name == "Player" && numBeats > 5)
             {
                 // To account for the fact that the player may be leaving the tile - don't penalize in this case.
-                if (Vector3.Distance(collider.gameObject.transform.position, predefinedLocations[idx].transform.position) <= 0.02f)
+                if (Vector3.Distance(collider.gameObject.transform.position, predefinedLocations[idx].transform.position) <= 0.1f)
                 {
                     Debug.Log("found player");
                     EventBus.Publish<DisplayHitOrMissEvent>(new DisplayHitOrMissEvent(null, predefinedLocations[idx], "miss"));
@@ -183,8 +185,8 @@ public class GridGameManager : MonoBehaviour
                 tile.GetComponent<SpriteRenderer>().sprite = missGridSprite;
                 if (RhythmEventManager.wasSceneReloaded || numMisses > freeMisses)
                 {
-                    // Reduce health on every other miss
-                    if (numMisses % 2 == 0)
+                    // Reduce health on every third miss
+                    if (numMisses % 3 == 0)
                     {
                         EventBus.Publish<ReduceHealth>(new ReduceHealth());
                     }
@@ -228,6 +230,16 @@ public class GridGameManager : MonoBehaviour
             {
                 stairsLocation.GetComponent<SpriteRenderer>().sprite = stairsSprite;
                 stairsLocation.tag = "stairs";
+            }
+            if(collectible != null && collectibleLocation != null)
+            {
+                GameObject.Instantiate(collectible, collectibleLocation.transform.position, Quaternion.identity);
+            }
+            GetComponent<EnemySpawner>().shouldSpawn = false;
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
+            foreach(var enemy in enemies)
+            {
+                Destroy(enemy);
             }
         }
     }

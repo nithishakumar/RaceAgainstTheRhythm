@@ -12,6 +12,14 @@ TagManager:
   - stairs
   - raceBoundary
   - canvas
+  - enemyTileTrack3
+  - enemyTileTrack1
+  - enemyTileTrack5
+  - enemyTileTrack4
+  - enemyTileTrack2
+  - enemyTileTrack6
+  - potion
+  - enemy
   layers:
   - Default
   - TransparentFX

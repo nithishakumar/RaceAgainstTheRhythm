@@ -32,6 +32,10 @@ public class HandleOnTrigger : MonoBehaviour
             Debug.Log("trigger transition");
             // Set scene reloaded to false!
         }
+        else if (other.gameObject.CompareTag("potion"))
+        {
+            // do potion activity
+        }
     }
 
     private void OnTriggerExit(Collider other)

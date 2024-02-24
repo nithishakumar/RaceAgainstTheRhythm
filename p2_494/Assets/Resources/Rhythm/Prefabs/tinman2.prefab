@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 6167738559471976895}
   - component: {fileID: 9181858647461252671}
   - component: {fileID: 6563351174416012613}
+  - component: {fileID: 3578002126816064504}
   m_Layer: 0
   m_Name: tinman2
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,7 +126,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -158,3 +159,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3578002126816064504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232908509143946598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 787d40f5a8589dc4d97c5add8c34c4e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  track: 6
+  moveSpeed: 10
+  destructionTimeFactor: 2
+  offset: {x: 0.4, y: 0, z: 0}
+  speedFactor: 0.5
