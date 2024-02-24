@@ -4,82 +4,60 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    public float movementSpeed;
-    public Transform movePoint;
-    // Layer with all colliders/boundaries that player should not run into
+    bool isMoving = false;
+    Vector3 origPos, targetPos;
+    public float timeToMove = 0.2f;
     public LayerMask stopMovement;
-    public float tileSize = 1f;
 
-    private bool isMoving = false;
-
-    void Update()
+    private void Update()
     {
         if (!isMoving)
         {
-            HandleInput();
-        }
-        else
-        {
-            MoveToPoint();
+            
+            if (Input.GetAxisRaw("Vertical") == 1 && CanMoveInDirection(Vector3.up))
+            {
+                StartCoroutine(MovePlayer(Vector3.up));
+            }
+            else if (Input.GetAxisRaw("Horizontal") == -1 && CanMoveInDirection(Vector3.left))
+            {
+                StartCoroutine(MovePlayer(Vector3.left));
+            }
+            else if (Input.GetAxisRaw("Vertical") == -1 && CanMoveInDirection(Vector3.down))
+            {
+                StartCoroutine(MovePlayer(Vector3.down));
+            }
+            else if (Input.GetAxisRaw("Horizontal") == 1 && CanMoveInDirection(Vector3.right))
+            {
+                StartCoroutine(MovePlayer(Vector3.right));
+            }
+            
         }
     }
 
-    void HandleInput()
+    IEnumerator MovePlayer(Vector3 direction)
     {
-        Vector2 currInput = GetInput();
-        float horizontalInput = currInput.x;
-        float verticalInput = currInput.y;
+        isMoving = true;
 
-        if (Mathf.Abs(horizontalInput) == 1f && verticalInput == 0f)
+        float elapsedTime = 0;
+        origPos = transform.position;
+        targetPos = transform.position + direction;
+
+        while (elapsedTime < timeToMove)
         {
-            if (CanMoveInDirection(Vector3.right * horizontalInput))
-            {
-                MoveToAdjacentTile(Vector3.right * horizontalInput);
-            }
+            transform.position = Vector3.Lerp(origPos, targetPos, elapsedTime / timeToMove);
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
-        else if (Mathf.Abs(verticalInput) == 1f && horizontalInput == 0f)
-        {
-            if (CanMoveInDirection(Vector3.up * verticalInput))
-            {
-                MoveToAdjacentTile(Vector3.up * verticalInput);
-            }
-        }
-        // Check if any movement input axis returns to 0 to stop movement
-        if (Mathf.Approximately(horizontalInput, 0f) && Mathf.Approximately(verticalInput, 0f))
-        {
-            isMoving = false;
-        }
+
+        transform.position = targetPos;
+
+        isMoving = false;
+
     }
 
     bool CanMoveInDirection(Vector3 direction)
     {
-        Collider[] colliders = Physics.OverlapSphere(movePoint.position + direction, 0.2f, stopMovement);
+        Collider[] colliders = Physics.OverlapSphere(transform.position + direction, 0.2f, stopMovement);
         return colliders.Length == 0;
-    }
-
-    void MoveToAdjacentTile(Vector3 direction)
-    {
-        movePoint.position += direction * tileSize;
-        isMoving = true;
-    }
-
-    void MoveToPoint()
-    {
-        transform.position = Vector3.MoveTowards(transform.position, movePoint.position, movementSpeed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
-        {
-            isMoving = false;
-        }
-    }
-
-    Vector2 GetInput()
-    {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
-        if (Math.Abs(horizontalInput) > 0.0f)
-        {
-            verticalInput = 0.0f;
-        }
-        return new Vector2(horizontalInput, verticalInput);
     }
 }

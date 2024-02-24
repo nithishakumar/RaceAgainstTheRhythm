@@ -47,7 +47,8 @@ public class HandleOnTrigger : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("potion"))
         {
-            // do potion activity
+            // Collect potion
+            Destroy(other.gameObject);
         }
     }
 
