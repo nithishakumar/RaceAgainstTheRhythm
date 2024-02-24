@@ -39,7 +39,7 @@ public class EnemyBehavior : MonoBehaviour
 
     IEnumerator Wait(GameObject player)
     {
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(0.1f);
         Potion potion = player.GetComponent<Potion>();
         if (!potion.usingPotion)
         {

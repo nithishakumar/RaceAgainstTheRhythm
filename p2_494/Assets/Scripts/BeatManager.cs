@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ public class BeatManager : MonoBehaviour
 {
     public float bpm;
     private AudioSource audioSource;
-    public Intervals[] intervals;
+    public List<Intervals> intervals;
 
     private void Start()
     {
@@ -18,10 +19,17 @@ public class BeatManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(var interval in intervals)
+        try
         {
-            float sampledTime = (audioSource.timeSamples / (audioSource.clip.frequency * interval.GetIntervalLength(bpm)));
-            interval.CheckForNewInterval(sampledTime);
+            foreach (var interval in intervals)
+            {
+                float sampledTime = (audioSource.timeSamples / (audioSource.clip.frequency * interval.GetIntervalLength(bpm)));
+                interval.CheckForNewInterval(sampledTime);
+            }
+        }
+        catch(InvalidOperationException e)
+        {
+            Debug.Log("More enemies were added! List was modified so iteration couldn't be performed.");
         }
         
     }
@@ -33,6 +41,12 @@ public class Intervals
     public float steps;
     private int lastInterval;
     public UnityEvent trigger;
+
+    public Intervals(float _steps, UnityEvent _trigger)
+    {
+        steps = _steps;
+        trigger = _trigger;
+    }
     public float GetIntervalLength(float bpm)
     {
         return 60f / (bpm * steps);

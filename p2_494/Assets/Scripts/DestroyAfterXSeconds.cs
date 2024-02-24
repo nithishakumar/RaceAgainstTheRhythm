@@ -1,11 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DestroyAfterXSeconds : MonoBehaviour
 {
     public float x;
-    public bool startAutomatically = true;
 
     void Start()
     {
