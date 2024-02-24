@@ -38,7 +38,7 @@ public class HealthDisplayer : MonoBehaviour
         if(healthIdx <= sprites.Count - 2)
         {
             image.sprite = sprites[healthIdx];
-            //AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
+            AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
             EventBus.Publish<DamageEvent>(new DamageEvent());
             healthIdx++;
         }

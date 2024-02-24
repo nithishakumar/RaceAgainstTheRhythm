@@ -146,10 +146,10 @@ public class GridGameManager : MonoBehaviour
             if (collider.gameObject.name == "Player" && numBeats > 5)
             {
                 // To account for the fact that the player may be leaving the tile - don't penalize in this case.
-                if (Vector3.Distance(collider.gameObject.transform.position, predefinedLocations[idx].transform.position) <= 0.05f)
+                if (Vector3.Distance(collider.gameObject.transform.position, predefinedLocations[idx].transform.position) <= 0.02f)
                 {
                     Debug.Log("found player");
-                    EventBus.Publish<DisplayHitOrMissEvent>(new DisplayHitOrMissEvent(predefinedLocations[idx], "miss"));
+                    EventBus.Publish<DisplayHitOrMissEvent>(new DisplayHitOrMissEvent(null, predefinedLocations[idx], "miss"));
                     numBeats++;
                     return;
                 }
@@ -169,10 +169,10 @@ public class GridGameManager : MonoBehaviour
 
     public void _OnDisplayHitOrMiss(DisplayHitOrMissEvent e)
     {
-        StartCoroutine(GridTileRoutine(e.tile, e.state));
+        StartCoroutine(GridTileRoutine(e.note, e.tile, e.state));
     }
 
-    IEnumerator GridTileRoutine(GameObject tile, string state)
+    IEnumerator GridTileRoutine(GameObject note, GameObject tile, string state)
     {
         if (shouldSpawn)
         {
@@ -203,6 +203,8 @@ public class GridGameManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
             tile.GetComponent<SpriteRenderer>().sprite = defaultGridSprite;
+
+            if(note != null) Destroy(note);
         }
     }
 
