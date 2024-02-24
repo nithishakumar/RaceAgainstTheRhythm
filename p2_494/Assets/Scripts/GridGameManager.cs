@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,6 +35,9 @@ public class GridGameManager : MonoBehaviour
 
     public GameObject stairsLocation;
 
+    public List<GameObject> predefinedLocations;
+    int numBeats = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -65,7 +69,7 @@ public class GridGameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         shouldSpawn = true;
     }
-    public void SpawnMusicNote()
+    public void SpawnMusicNoteRandom()
     {
         if (!shouldSpawn)
         {
@@ -115,6 +119,39 @@ public class GridGameManager : MonoBehaviour
         }
     }
 
+    public void SpawnPredefined()
+    {
+        if (!shouldSpawn)
+        {
+            return;
+        }
+
+        int idx = numBeats % predefinedLocations.Count;
+        if(idx == 0 && numBeats >= predefinedLocations.Count)
+        {
+            idx++;
+            predefinedLocations.Reverse();
+        }
+        Collider[] colliders = Physics.OverlapSphere(predefinedLocations[idx].transform.position, 0.05f, mask);
+        
+        // Player arrived on the tile before the note was going to be spawned (ignore the first few times)
+        foreach (var collider in colliders) {            
+            
+            if (collider.gameObject.name == "Player" && numBeats > 5) {
+                Debug.Log("found player");
+                EventBus.Publish<DisplayHitOrMissEvent>(new DisplayHitOrMissEvent(predefinedLocations[idx], "miss"));
+                numBeats++;
+                return;
+
+            }
+        }
+        GameObject rhythm = GameObject.Instantiate(ResourceLoader.GetPrefab("musicNote1"),
+                predefinedLocations[idx].transform.position, Quaternion.identity);
+        rhythm.GetComponent<MusicNote>().tile = predefinedLocations[idx];
+        rhythm.GetComponent<MusicNote>().StartDestroyRoutine(secPerBeat * noteDurationBeforeMiss);
+        numBeats++;
+    }
+
     public void _OnDisplayHitOrMiss(DisplayHitOrMissEvent e)
     {
         StartCoroutine(GridTileRoutine(e.tile, e.state));
@@ -127,7 +164,7 @@ public class GridGameManager : MonoBehaviour
             if (state == "miss")
             {
                 numMisses++;
-                AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
+                //AudioSource.PlayClipAtPoint(damageSfx, Camera.main.transform.position);
                 tile.GetComponent<SpriteRenderer>().sprite = missGridSprite;
                 if (RhythmEventManager.wasSceneReloaded || numMisses > freeMisses)
                 {
@@ -170,8 +207,11 @@ public class GridGameManager : MonoBehaviour
             // Stop spawning tiles
             shouldSpawn = false;
             // Add stairs sprite
-            stairsLocation.GetComponent<SpriteRenderer>().sprite = stairsSprite;
-            stairsLocation.tag = "stairs";
+            if (stairsLocation != null)
+            {
+                stairsLocation.GetComponent<SpriteRenderer>().sprite = stairsSprite;
+                stairsLocation.tag = "stairs";
+            }
         }
     }
 

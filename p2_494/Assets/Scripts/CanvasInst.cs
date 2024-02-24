@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class CanvasInst : MonoBehaviour
 {
-    public static CanvasInst instance;
     private void Awake()
     {
-        if (instance == null)
+        if(GameObject.FindGameObjectsWithTag("canvas").Length > 1)
+        {
+            Destroy(gameObject);
+
+        }
+        else
         {
             DontDestroyOnLoad(gameObject);
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            Destroy(instance);
         }
     }
 }

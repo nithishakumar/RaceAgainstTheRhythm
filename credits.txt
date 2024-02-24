@@ -1,7 +1,15 @@
 Music:
+
 Cry by Sascha Ende
 Free download: https://filmmusic.io/song/10346-cry
 License (CC BY 4.0): https://filmmusic.io/standard-license
+
+Duh Fuse by French Fuse
+https://www.youtube.com/watch?v=LlZzTpzgdII
+YouTube Audio Libary License:
+You can use this audio track in any of your videos, including videos that you monetize. No attribution is required.
+YouTube may credit the artist and link the Audio Library from your video.
+You may not make available, distribute or perform the music files from this library separately from videos and other content into which you have incorporated these music files (e.g., standalone distribution of these files is not permitted).
 
 Basic Music-Syncing Code:
 https://www.youtube.com/watch?v=gIjajeyjRfE&t=625s
@@ -16,5 +24,5 @@ https://freesound.org/people/alphatrooper18/sounds/362422/
 Player Death SFX:
 https://freesound.org/people/Fupicat/sounds/475347/
 
-Typing SFX:
+Blip (Hit Note) SFX:
 https://freesound.org/people/BaggoNotes/sounds/720220/

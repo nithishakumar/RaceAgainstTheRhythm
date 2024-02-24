@@ -10,8 +10,8 @@ TagManager:
   - trap
   - release
   - stairs
-  - playerPos
   - raceBoundary
+  - canvas
   layers:
   - Default
   - TransparentFX

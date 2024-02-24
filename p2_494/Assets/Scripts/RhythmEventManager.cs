@@ -10,6 +10,7 @@ public class RhythmEventManager : MonoBehaviour
     public float bpm;
     public float secPerBeat;
     public static bool wasSceneReloaded = false;
+    public bool switchingObstacles;
 
     // For Obstacle Switching
     List<Sprite> switchSprites = new List<Sprite>();
@@ -22,7 +23,7 @@ public class RhythmEventManager : MonoBehaviour
         switchSprites.Add(ResourceLoader.GetSprite("tile1"));
         secPerBeat = 60f / bpm;
 
-        if (wasSceneReloaded)
+        if (wasSceneReloaded || !switchingObstacles)
         {
             GameObject.Find("Player").GetComponent<CharacterMovement>().enabled = true;
         }
@@ -53,12 +54,5 @@ public class RhythmEventManager : MonoBehaviour
             GameObject.Find("Player").GetComponent<CharacterMovement>().enabled = true;
             movementEnabled = true;
         }
-    }
-
-    public void Restart()
-    {
-        wasSceneReloaded = true;
-        GameObject.Find("Canvas").transform.GetChild(1).transform.gameObject.SetActive(false);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
