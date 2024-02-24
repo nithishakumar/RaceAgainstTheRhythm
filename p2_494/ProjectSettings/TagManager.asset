@@ -10,7 +10,6 @@ TagManager:
   - trap
   - release
   - stairs
-  - raceBoundary
   - canvas
   - enemyTileTrack3
   - enemyTileTrack1
@@ -20,6 +19,7 @@ TagManager:
   - enemyTileTrack6
   - potion
   - enemy
+  - backwardTransition
   layers:
   - Default
   - TransparentFX

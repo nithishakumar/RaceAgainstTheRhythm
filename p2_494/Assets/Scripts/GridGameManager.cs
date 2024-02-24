@@ -171,7 +171,14 @@ public class GridGameManager : MonoBehaviour
 
     public void _OnDisplayHitOrMiss(DisplayHitOrMissEvent e)
     {
-        StartCoroutine(GridTileRoutine(e.note, e.tile, e.state));
+        if (e.note == null)
+        {
+            StartCoroutine(GridTileRoutine(null, e.tile, e.state));
+        }
+        else
+        {
+            StartCoroutine(GridTileRoutine(e.note, e.tile, e.state));
+        }
     }
 
     IEnumerator GridTileRoutine(GameObject note, GameObject tile, string state)

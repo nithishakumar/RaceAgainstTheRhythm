@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HandleOnTrigger : MonoBehaviour
 {
     Sprite obstacleSprite;
     public Dictionary<GameObject, Boolean> tileStates = new Dictionary<GameObject, Boolean>();
+    public static Dictionary<string, string> forwardTransition = new Dictionary<string, string>();
+    public static Dictionary<string, string> backwardTransition = new Dictionary<string, string>();
     public float bpm;
     float secPerBeat;
 
@@ -14,6 +17,8 @@ public class HandleOnTrigger : MonoBehaviour
     {
         obstacleSprite = ResourceLoader.GetSprite("obstacle4");
         secPerBeat = 60f / bpm;
+        forwardTransition["Room 1"] = "Room 2";
+        backwardTransition["Room 2"] = "Room 1";
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,6 +36,14 @@ public class HandleOnTrigger : MonoBehaviour
             // trigger transition event
             Debug.Log("trigger transition");
             // Set scene reloaded to false!
+            ForwardTransition();
+        }
+        else if (other.gameObject.CompareTag("backwardTransition"))
+        {
+            // trigger transition event
+            Debug.Log("trigger transition");
+            // Set scene reloaded to false!
+            BackwardTransition();
         }
         else if (other.gameObject.CompareTag("potion"))
         {
@@ -63,6 +76,27 @@ public class HandleOnTrigger : MonoBehaviour
                 yield return new WaitForSeconds(secPerBeat * 1.5f);
             }
             yield return null;
+        }
+    }
+
+
+    void ForwardTransition()
+    {
+        RhythmEventManager.wasSceneReloaded = false;
+        string currScene = SceneManager.GetActiveScene().name;
+        if (forwardTransition.ContainsKey(currScene))
+        {
+            SceneManager.LoadScene(forwardTransition[currScene]);
+        }
+    }
+
+    void BackwardTransition()
+    {
+        RhythmEventManager.wasSceneReloaded = false;
+        string currScene = SceneManager.GetActiveScene().name;
+        if (backwardTransition.ContainsKey(currScene))
+        {
+            SceneManager.LoadScene(backwardTransition[currScene]);
         }
     }
 }
