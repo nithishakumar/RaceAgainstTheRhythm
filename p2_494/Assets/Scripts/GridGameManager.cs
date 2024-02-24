@@ -132,19 +132,34 @@ public class GridGameManager : MonoBehaviour
             idx++;
             predefinedLocations.Reverse();
         }
-        Collider[] colliders = Physics.OverlapSphere(predefinedLocations[idx].transform.position, 0.05f, mask);
-        
+        SpriteRenderer spriteRenderer = predefinedLocations[idx].GetComponent<SpriteRenderer>();
+        Collider[] colliders = Physics.OverlapSphere(predefinedLocations[idx].transform.position, 0.01f, mask);
+        if (spriteRenderer.sprite != defaultGridSprite)
+        {
+            numBeats++;
+            return;
+        }
         // Player arrived on the tile before the note was going to be spawned (ignore the first few times)
-        foreach (var collider in colliders) {            
-            
-            if (collider.gameObject.name == "Player" && numBeats > 5) {
-                Debug.Log("found player");
-                EventBus.Publish<DisplayHitOrMissEvent>(new DisplayHitOrMissEvent(predefinedLocations[idx], "miss"));
-                numBeats++;
-                return;
+        foreach (var collider in colliders)
+        {
 
+            if (collider.gameObject.name == "Player" && numBeats > 5)
+            {
+                // To account for the fact that the player may be leaving the tile - don't penalize in this case.
+                if (Vector3.Distance(collider.gameObject.transform.position, predefinedLocations[idx].transform.position) <= 0.05f)
+                {
+                    Debug.Log("found player");
+                    EventBus.Publish<DisplayHitOrMissEvent>(new DisplayHitOrMissEvent(predefinedLocations[idx], "miss"));
+                    numBeats++;
+                    return;
+                }
+            }
+            else if (collider.gameObject.CompareTag("rhythm"))
+            {
+                return;
             }
         }
+
         GameObject rhythm = GameObject.Instantiate(ResourceLoader.GetPrefab("musicNote1"),
                 predefinedLocations[idx].transform.position, Quaternion.identity);
         rhythm.GetComponent<MusicNote>().tile = predefinedLocations[idx];
@@ -185,7 +200,7 @@ public class GridGameManager : MonoBehaviour
                 tile.GetComponent<SpriteRenderer>().sprite = hitGridSprite;
             }
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
 
             tile.GetComponent<SpriteRenderer>().sprite = defaultGridSprite;
         }
