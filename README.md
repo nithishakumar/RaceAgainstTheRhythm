@@ -3,4 +3,4 @@ A Rhythm game prototype where the player moves to music note tiles by the next b
 
 ![Gameplay](https://github.com/nithishakumar/RaceAgainstTheRhythm/blob/main/Gameplay/Level2.gif)
 
-Play it here: https://nithisha.itch.io/race-against-the-rhythm
+Play it <a href="https://nithisha.itch.io/race-against-the-rhythm">here.</a>
